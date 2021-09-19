@@ -1,0 +1,98 @@
+.image:hover > .add_to_cart{
+    opacity: 1;
+}
+.image img{
+    transition: transform .3s ease-in-out;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.image:hover > img{
+    transform:scale(.9, .9);
+}
+.add_to_cart{
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    transition: opacity .3s ease-in-out;
+}
+.Out_Stock{
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 5px 10px;
+    font-size: 12px;
+    background: #ef837b;
+    color: white;
+    text-align: center;
+    border-radius: 16px;
+}
+.add-wish{
+    right: 10px;
+    position: absolute;
+    top: 8px;
+}
+.wish{
+    display: flex;
+    align-items: center;
+}
+.wish , .quick_view{
+    margin: 10px 0;
+    background: #ef837b;
+    color: #fff;
+    padding: 3px;
+    border-radius: 50%;
+    font-size: 9px;
+    transition: all .2s ease;
+    transform: scale(1);
+    cursor: pointer;
+   
+}
+.quick_view{
+    display: flex;
+    align-items: center;
+}
+.wish:hover{
+        color: white;
+        background: #a6c76c;
+        transform: scale(1.1);
+}
+.quick_view:hover{
+        color: white;
+        background: #a6c76c;
+        transform: scale(1.1);
+}
+.wish:hover > .wish_text{
+    opacity: 1;
+}
+.quick_view:hover > .wish_text{
+    opacity: 1;
+}
+.wish_text{
+    color: white;
+    opacity: 0;
+    position: absolute;
+    left: -85px;
+    background: #a6c76c;
+    padding: 6px 10px;
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+    cursor: default;
+}
+.add-bag{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+   text-align: center;
+   background: #ef837b;
+   color: white;
+   padding: 4px 0;
+   transition: all .3s ease;
+}
+.add-bag:hover{
+    background: #a6c76c;
+    cursor: pointer;
+}
