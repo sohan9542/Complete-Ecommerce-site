@@ -12,7 +12,8 @@ module.exports = {
         'tback': 'rbga(355,355,355, 0.1)',
         'card-bg': '#eeedeb',
         'new': '#ef837b',
-        'blk-ash': '#4b4b4b'
+        'blk-ash': '#4b4b4b',
+        'opaDown': 'rbga(0,0,0, 0.4)',
       },
      
     },

@@ -92,7 +92,16 @@
    padding: 4px 0;
    transition: all .3s ease;
 }
+.carticon{
+    opacity: 0;
+    transition: .3s ease-in;
+    margin-right: -10px;
+}
 .add-bag:hover{
     background: #a6c76c;
     cursor: pointer;
+}
+.add-bag:hover > .carticon{
+    opacity: 1;
+    margin-right: 6px;
 }

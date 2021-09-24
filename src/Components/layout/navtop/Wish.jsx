@@ -25,7 +25,12 @@ const Wish = ({ product }) => {
                         </div>
                     </div>
                     <div className="flex-1 flex items-end justify-between text-sm">
-                        <p onClick={() => handleClick(product)} className="bg-primary-txt px-2 py-1 text-white transition delay-150 ease-in cursor-pointer rounded hover:bg-new ">Add To Cart</p>
+                      {
+                          product.stock ? 
+                          <p onClick={() => handleClick(product)} className="bg-primary-txt px-2 py-1 text-white transition delay-150 ease-in cursor-pointer rounded hover:bg-new ">Add To Cart</p>
+                          :
+                          <p className="bg-primary-txt px-2 py-1 text-white transition delay-150 ease-in cursor-pointer rounded hover:bg-new " style={{cursor:'not-allowed'}}>Add To Cart</p>
+                      }
                         <div className="flex">
                             <button onClick={() => wishRemvoe(product)} type="button" className="font-medium text-primary-txt hover:text-new">
                                 Remove

@@ -5,7 +5,7 @@ export const products = [
     href: '#',
     imageSrc: 'https://i.pinimg.com/originals/b9/67/e3/b967e31004de682f8ef72ca8662c6797.jpg',
     imageAlt: "Front of men's Basic Tee in black.",
-    price: '$135',
+    price: 135,
     type: ['Women', 'Accessories'],
     color: 'Black',
     stock: false,

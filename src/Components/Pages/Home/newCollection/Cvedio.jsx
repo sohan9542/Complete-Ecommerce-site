@@ -9,8 +9,8 @@ const Cvedio = () => {
     const cancelButtonRef = useRef(null)
     return (
         <>
-            <div className="max-w-2xl my-4 relative mx-auto px-4 sm:py-12
-                 sm:px-6 lg:max-w-7xl lg:px-8" style={{background: "url(https://previews.123rf.com/images/dragonimages/dragonimages1612/dragonimages161203138/66523349-copy-spaced-portrait-of-a-young-lady-in-sombrero-hat-sitting-on-the-river-side.jpg)"}}>
+            <div className="max-w-2xl my-4 cvedio relative mx-auto px-4 sm:py-12
+                 sm:px-6 lg:max-w-7xl lg:px-8" >
                 <div className="flex items-center py-16 flex-col justify-center" style={{width: '100%', height: '100%'}}>
                     <h3 className="font-bold text-white lg:text-3xl text-2xl sm:text-lg">NEW COLLECTION</h3>
                     <h1 className="font-bold text-white lg:text-7xl text-4xl sm:text-2xl">Winter’19 / Spring’20</h1>

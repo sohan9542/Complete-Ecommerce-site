@@ -5,6 +5,8 @@ import { ChevronDownIcon, FilterIcon, MinusSmIcon, PlusSmIcon, ViewGridIcon } fr
 import { products } from '../../../Data/Product'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 import { Link } from 'react-router-dom'
+import { useContext } from 'react'
+import { RapperContent } from '../../../App';
 const sortOptions = [
     { name: 'Most Popular', href: '#', current: true },
     { name: 'Best Rating', href: '#', current: false },
@@ -56,6 +58,7 @@ function classNames(...classes) {
 }
 
 const Shop = () => {
+    const { handleClick, handlewish, setOpen, setQuickviewProduct, setWtoltip, setToltip } = useContext(RapperContent)
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const filtercategory = products.map(pd => pd.category)
 
@@ -65,7 +68,19 @@ const Shop = () => {
             newproduct.push(pd)
         }
     })
-    const showProduct = products.slice(0, 4)
+    const showProduct = products.slice(0, 5)
+    const handlequickview = (e) => {
+        setOpen(true)
+        setQuickviewProduct(e)
+    }
+    const handleadtocart = (e)=>{
+        handleClick(e)
+        setToltip(true)
+    }
+    const handleallWish = (e)=>{
+        handlewish(e)
+        setWtoltip(true)
+    }
     return (
         <>
             <div className="bg-white">
@@ -305,11 +320,11 @@ const Shop = () => {
                                                         </div>
                                                         <div className="col-span-2 px-3 text-ash flex flex-col justify-center">
                                                             <p className="text-sm capitalize">{pro.for}</p>
-                                                            <h2 className="py-2 text-blk-ash font-medium">{pro.name}</h2>
+                                                            <h2 className="py-2 text-primary-txt font-medium"><Link className="hover:text-new"  to={"/productDetails/" + pro.id}>{pro.name}</Link></h2>
                                                             <p className="text-sm">Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero, faucibus adipiscing. Sed lectus.</p>
                                                         </div>
                                                         <div className="flex flex-col px-3 justify-center">
-                                                            <h1 className="px-2 text-lg font-semibold text-primary-txt py-1">{pro.price}</h1>
+                                                            <h1 className="px-2 text-lg font-semibold text-primary-txt py-1">${pro.price}</h1>
                                                             <div className="flex px-2 items-center gap-1 py-1">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-500 " viewBox="0 0 20 20" fill="currentColor">
                                                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -333,18 +348,25 @@ const Shop = () => {
 
                                                             </div>
                                                             <div className="flex px-2 items-center justify-between py-1 text-ash">
-                                                                <span className="flex items-center text-sm"><svg xmlns="http://www.w3.org/2000/svg" className="h-4 mr-1 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <span onClick={() => handlequickview(pro)} className="flex cursor-pointer items-center text-sm"><svg xmlns="http://www.w3.org/2000/svg" className="h-4 mr-1 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                                 </svg> Quick View</span>
-                                                                <span className="flex items-center  py-1 text-sm">
+                                                                <span onClick={() => handleallWish(pro)} className="flex cursor-pointer items-center  py-1 text-sm">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 mr-1 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                                                     </svg> Wishlist
                                                                 </span>
                                                             </div>
                                                             <div style={{ width: '100%' }} className="px-2">
-                                                                <div className="border-1 border-primary-txt text-center transition delay-200 ease-linear text-primary-txt cursor-pointer py-2 hover:bg-primary-txt hover:text-white">ADD TO CART</div>
+                                                                {
+                                                                    pro.stock ?
+                                                                        <div onClick={() => handleadtocart(pro)} className="border-1 border-primary-txt text-center transition delay-200 ease-linear text-primary-txt cursor-pointer py-2 hover:bg-primary-txt hover:text-white">ADD TO CART</div>
+                                                                        :
+                                                                        <div className="border-1 border-primary-txt text-center transition delay-200 ease-linear text-primary-txt py-2 hover:bg-primary-txt hover:text-white" style={{ cursor: 'not-allowed' }}>Out Of Stock</div>
+
+                                                                }
+
                                                             </div>
                                                         </div>
                                                     </div>
