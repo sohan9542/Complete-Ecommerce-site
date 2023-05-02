@@ -80,13 +80,13 @@ export default function Quickview() {
 
                                 <div className="w-full grid grid-cols-1 gap-y-8 gap-x-6 items-start sm:grid-cols-12 lg:gap-x-8">
                                     <div className="aspect-w-2 aspect-h-3 rounded-lg bg-gray-100 overflow-hidden sm:col-span-4 lg:col-span-5">
-                                        <img src={quickviewProduct.imageSrc} alt={quickviewProduct.imageAlt} className="object-center object-cover" />
+                                        <img src={quickviewProduct?.images?.[0]?.url} alt={quickviewProduct?.images?.[0]?.url} className="object-center object-cover" />
                                     </div>
                                     <div className="sm:col-span-8 lg:col-span-7">
                                         <h2 className="text-2xl font-medium text-gray-900 sm:pr-12">{quickviewProduct.name}</h2>
 
                                         <section aria-labelledby="information-heading" className="mt-2">
-                                            <div className="my-2">
+                                            {/* <div className="my-2">
                                                 <h4 className="sr-only">Reviews</h4>
                                                 <div className="flex items-center">
                                                     <div className="flex items-center">
@@ -106,14 +106,14 @@ export default function Quickview() {
                                                         {product.reviewCount} reviews
                                                     </Link>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                             <p className="text-2xl text-primary-txt">${quickviewProduct.price}</p>
                                         </section>
 
                                         <section aria-labelledby="options-heading" className="mt-10 d">
 
                                             <div>
-                                                <p className="text-ash text-sm">Morbi purus libero, faucibus adipiscing, commodo quis, gravida id, est. Sed lectus. Praesent elementum hendrerit tortor. Sed semper lorem at felis. Vestibulum volutpat, lacus a ultrices sagittis, mi neque euismod dui, eu pulvinar nunc sapien ornare nisl. Phasellus pede arcu, dapibus eu,</p>
+                                                <p className="text-ash text-sm">{quickviewProduct?.description}</p>
                                             </div>
 
 
@@ -135,17 +135,14 @@ export default function Quickview() {
                                                             Add to bag
                                                         </button>
                                                 }
-                                                <button
-                                                    onClick={() => allwishFunc(quickviewProduct)}
-                                                    type="submit"
-                                                    className="mt-6 w-48 bg-new transition ease-in duration-150 border border-transparent rounded-md py-2 px-6 flex items-center justify-center text-base font-medium text-white hover:bg-primary-txt focus:outline-none"
-                                                >
-                                                    Add to Wishlist
-                                                </button>
+                                            
                                             </div>
 
                                             <div className="mt-4 text-ash capitalize text-sm">
                                                 Category :  {quickviewProduct.category}
+                                            </div>
+                                            <div className="mt-2 text-ash capitalize text-sm">
+                                                Smell :  {quickviewProduct.smell}
                                             </div>
                                             <div className="flex items-center mt-4 gap-1 text-lg text-ash">
                                                 Share :

@@ -4,15 +4,12 @@ import { RapperContent } from '../../../../App'
 
 const Product = ({ product }) => {
     const { handleClick } = useContext(RapperContent)
-    const { setToltip, handlewish, setWtoltip, setOpen, setQuickviewProduct } = useContext(RapperContent)
+    const { setToltip,  setOpen, setQuickviewProduct } = useContext(RapperContent)
     const setEverything = (e) => {
         handleClick(e)
         setToltip(true)
     }
-    const setWishall = (e) => {
-        handlewish(e)
-        setWtoltip(true)
-    }
+
     const quickviewall = (e) => {
         setQuickviewProduct(e)
         setOpen(true)
@@ -20,23 +17,17 @@ const Product = ({ product }) => {
     return (
         <div>
 
-            <div key={product.id} className="group relative">
+            <div key={product._id} className="group relative">
 
-                <div className="w-full image relative min-h-80 bg-card-bg aspect-w-1 aspect-h-1 rounded-md overflow-hidden lg:h-80 lg:aspect-none">
+                <div className="w-full image relative min-h-80 border aspect-w-1 aspect-h-1 rounded-md overflow-hidden lg:h-80 lg:aspect-none">
                     <img
-                        src={product.imageSrc}
-                        alt={product.imageAlt}
-                        className="w-full h-full object-center object-cover lg:w-full lg:h-full"
+                        src={product?.images?.[0]?.url}
+                        alt={product?.images?.[0]?.url}
+                        className="w-full h-full object-center object-cover"
                     />
                     <div className="add_to_cart absolute">
                         <div className="add-wish">
-                            <div className="wish">
-                                <div className="wish_text">
-                                    Add To Wishlist
-                                </div>
-                                <svg onClick={() => setWishall(product)} xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                </svg></div>
+                       
                             <div className="quick_view">
                                 <div className="wish_text">
                                     See Quick View
@@ -49,7 +40,7 @@ const Product = ({ product }) => {
                         </div>
                         {
 
-                            product.stock ?
+                            product.stock > 0 ?
                                 <div onClick={() => setEverything(product)} className="add-bag flex justify-center items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 carticon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -65,22 +56,17 @@ const Product = ({ product }) => {
                     </div>
                 </div>
 
-                <div className="mt-4 flex justify-between">
+                <div className="mt-2 flex justify-between">
                     <div>
                         <h3 className="text-sm text-gray-700">
-                            {
-                                product.type.map(link => (
-                                    <Link className="mr-2 text-ash" key={link}>{link}</Link>
-
-                                ))
-                            }
-                            <br />
-                            <Link to={"/productDetails/" + product.id} className="text-lg name font-bold text-blk-txt transition delay-200 ease-linear hover:text-primary-txt" >
+                        <p className="mr-2 text-ash" >{product?.category}</p>
+                           
+                            <p className="text-lg name font-bold text-blk-txt transition delay-200 ease-linear hover:text-primary-txt" >
                                 <span aria-hidden="true" className="absolute inset-0" />
-                                {product.name}
-                            </Link>
+                                {product.name?.slice(0,15)}
+                            </p>
                         </h3>
-                        <p className="mt-1 text-sm text-gray-500">{product.color}</p>
+                        <p className="mt-1 text-sm text-gray-500">{product.smell}</p>
                     </div>
                     <p className="text-lg font-bold text-primary-txt">${product.price}</p>
                 </div>
