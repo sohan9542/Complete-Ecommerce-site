@@ -64,6 +64,12 @@ const Sidebar = () => {
           <div className="flex flex-col pl-7">
           <Link
             className="hover:text-new text-lg pb-2 font-medium"
+            to="/admin/dashboard"
+          >
+            Dashboard
+          </Link>
+          <Link
+            className="hover:text-new text-lg pb-2 font-medium"
             to="/admin/products"
           >
             All Products
@@ -96,6 +102,13 @@ const Sidebar = () => {
       </Transition.Root>
 
       <div className=" flex-col hidden lg:flex h-full px-10 py-6 pt-20 divide-y bg-card-bg">
+          <NavLink
+            activeClassName="text-new"
+            className="hover:text-new text-lg pb-2 font-medium"
+            to="/admin/dashboard"
+          >
+            Dashboard
+          </NavLink>
           <NavLink
             activeClassName="text-new"
             className="hover:text-new text-lg pb-2 font-medium"

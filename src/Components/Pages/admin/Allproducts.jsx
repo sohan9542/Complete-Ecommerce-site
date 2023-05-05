@@ -111,7 +111,7 @@ const AllProduct = () => {
                       scope="col"
                       className="px-6 py-2 text-left text-xs font-bold text-gray-500  tracking-wider"
                     >
-                      Category
+                      Product
                     </th>
                     <th
                       scope="col"
@@ -160,7 +160,7 @@ const AllProduct = () => {
                         </div>
                         </td>
                         <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
-                          <p>{item?.category}</p>
+                          <p>{item?.productType}</p>
                         </td>
                         <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
                           <p>{item?.smell}</p>

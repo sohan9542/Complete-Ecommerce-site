@@ -164,7 +164,7 @@ export default function Navbar() {
                       >
                            {isAuthenticated && isAdmin && (
                     <Link
-                      to="/admin/products"
+                      to="/admin/dashboard"
                       className="text-sm   transition duration-300 ease-linear font-medium text-gray-700 hover:text-primary-txt"
                     >
                       Admin
@@ -338,51 +338,8 @@ export default function Navbar() {
                 </div>
 
                 {/* Flyout menus */}
-                <Popover.Group className="hidden lg:ml-8 lg:block lg:self-stretch">
-                  <div className="h-full flex space-x-8">
-                    <Popover className="flex">
-                      {({ open }) => (
-                        <>
-                          <div className="relative flex">
-                            <Popover.Button
-                              className={classNames(
-                                open
-                                  ? "border-primary-txt text-primary-txt"
-                                  : "border-transparent text-gray-700 transition duration-300 ease-linear hover:text-primary-txt",
-                                "relative z-10 flex items-center transition-colors ease-out duration-200 text-sm font-medium border-b-2 -mb-px pt-px"
-                              )}
-                            >
-                              <Link className="hover:text-new" to="/shop">
-                                Shop
-                              </Link>
-                            </Popover.Button>
-                          </div>
-                        </>
-                      )}
-                    </Popover>
-                    {/* <Popover className="flex">
-                      {({ open }) => (
-                        <>
-                          <div className="relative flex">
-                            <Popover.Button
-                              className={classNames(
-                                open
-                                  ? 'border-primary-txt text-primary-txt'
-                                  : 'border-transparent text-gray-700 transition duration-300 ease-linear hover:text-primary-txt',
-                                'relative z-10 flex items-center transition-colors ease-out duration-200 text-sm font-medium border-b-2 -mb-px pt-px'
-                              )}
-                            >
-                              <Link to="/blog" className="hover:text-new">Blog</Link>
-                            </Popover.Button>
-                          </div>
-
-
-                        </>
-                      )}
-                    </Popover> */}
-                  </div>
-                </Popover.Group>
-                {/* <Popover.Group as="nav" className="hidden md:flex ml-8">
+             
+                <Popover.Group as="nav" className="hidden md:flex ml-8">
                   <Popover className="relative">
                     {({ open }) => (
                       <>
@@ -394,7 +351,7 @@ export default function Navbar() {
                             "group bg-white rounded-md inline-flex items-center text-sm font-medium hover:text-gray-900 "
                           )}
                         >
-                          <span className="font-sm mb-1">Pages</span>
+                          <span className="font-sm mb-1">Perfume</span>
                           <ChevronDownIcon
                             className={classNames(
                               open ? "text-primary-txt" : "text-gray-400",
@@ -417,45 +374,26 @@ export default function Navbar() {
                             <div className="rounded-lg shadow-lg  overflow-hidden">
                               <div className="relative grid gap-3 bg-white px-2 py-3 sm:gap-8 sm:p-8">
                                 <Link
-                                  to="/about"
+                                  to="/perfume?category=men"
                                   className=" flex items-center rounded-lg hover:text-primary-txt"
                                 >
                                   <div className="ml-4">
                                     <p className="text-base font-medium text-gray-900">
-                                      About
+                                      Men
                                     </p>
                                   </div>
                                 </Link>
                                 <Link
-                                  to="/contact"
+                                  to="/perfume?category=women"
                                   className=" flex items-start rounded-lg hover:text-primary-txt"
                                 >
                                   <div className="ml-4">
                                     <p className="text-base font-medium text-gray-900">
-                                      Contact
+                                      Women
                                     </p>
                                   </div>
                                 </Link>
-                                <Link
-                                  to="/faq"
-                                  className=" flex items-start rounded-lg hover:text-primary-txt"
-                                >
-                                  <div className="ml-4">
-                                    <p className="text-base font-medium text-gray-900">
-                                      FAQ
-                                    </p>
-                                  </div>
-                                </Link>
-                                <Link
-                                  to="/error404"
-                                  className=" flex items-start rounded-lg hover:text-primary-txt"
-                                >
-                                  <div className="ml-4">
-                                    <p className="text-base font-medium text-gray-900">
-                                      Error 404
-                                    </p>
-                                  </div>
-                                </Link>
+                          
                               </div>
                             </div>
                           </Popover.Panel>
@@ -463,8 +401,33 @@ export default function Navbar() {
                       </>
                     )}
                   </Popover>
-                </Popover.Group> */}
-
+                </Popover.Group>
+                <Popover.Group className="hidden lg:ml-8 lg:block lg:self-stretch">
+                  <div className="h-full flex space-x-8">
+                    <Popover className="flex">
+                      {({ open }) => (
+                        <>
+                          <div className="relative flex gap-3">
+                            <Popover.Button
+                              className={classNames(
+                                open
+                                  ? "border-primary-txt text-primary-txt"
+                                  : "border-transparent text-gray-700 transition duration-300 ease-linear hover:text-primary-txt",
+                                "relative z-10 flex items-center transition-colors ease-out duration-200 text-sm font-medium border-b-2 -mb-px pt-px"
+                              )}
+                            >
+                              <Link className="hover:text-new" to="/bakhoor">
+                                Bakhoor
+                              </Link>
+                            </Popover.Button>
+                          
+                          </div>
+                        </>
+                      )}
+                    </Popover>
+            
+                  </div>
+                </Popover.Group>
                 <div className="ml-auto flex items-center">
                   {isAuthenticated === false && (
                     <div className="hidden lg:flex lg:flex-1 mr-4 lg:items-center lg:justify-end lg:space-x-6">
@@ -488,7 +451,7 @@ export default function Navbar() {
                   )}
                   {isAuthenticated && isAdmin && (
                     <Link
-                      to="/admin/products"
+                      to="/admin/dashboard"
                       className="text-sm mr-4 hidden lg:block transition duration-300 ease-linear font-medium text-gray-700 hover:text-primary-txt"
                     >
                       Admin

@@ -16,6 +16,7 @@ const EditProduct = () => {
   const [smell, setSmell] = useState("");
   const [stock, setStock] = useState(0);
   const [imagesPreview, setImagesPreview] = useState([]);
+  const [productType, setProductType] = useState("");
   const { id } = useParams();
   const history = useHistory();
 
@@ -28,6 +29,7 @@ const EditProduct = () => {
       images: images,
       category: category,
       smell: smell,
+      productType: productType,
     });
 
     let config = {
@@ -109,7 +111,7 @@ const EditProduct = () => {
         setSmell(product.smell);
         setPrice(product.price);
         setStock(product.stock);
-   
+        setProductType(product.productType);
       })
       .catch(function (error) {
         console.log(error);
@@ -190,35 +192,68 @@ const EditProduct = () => {
               onChange={createProductImagesChange}
               type="file"
             />
-
-            <p className=" mt-3 mb-1">Category</p>
+            <p className=" mt-3 mb-1">Product Type</p>
             <select
               required
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              value={productType}
+              onChange={(e) => setProductType(e.target.value)}
               className="border px-3 py-1 text-sm outline-none"
               name=""
               id=""
             >
               <option value=""></option>
-              <option value="men">Men</option>
-              <option value="women">Women</option>
+              <option value="perfume">Perfume</option>
+              <option value="bakhoor">Bakhoor</option>
             </select>
+            {productType === "perfume" && (
+              <p className=" mt-3 mb-1">Category</p>
+            )}
+            {productType === "perfume" && (
+              <select
+                required
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="border px-3 py-1 text-sm outline-none"
+                name=""
+                id=""
+              >
+                <option value=""></option>
+                <option value="men">Men</option>
+                <option value="women">Women</option>
+              </select>
+            )}
             <p className=" mt-3 mb-1">Smell</p>
-            <select
-              required
-              value={smell}
-              onChange={(e) => setSmell(e.target.value)}
-              className="border px-3 py-1 text-sm outline-none"
-              name=""
-              id=""
-            >
-              <option value=""></option>
-              <option value="citrus">Citrus</option>
-              <option value="oud">Owd</option>
-              <option value="sweet">Sweet</option>
-              <option value="rose">Rose</option>
-            </select>
+            {productType === "perfume" && (
+              <select
+                required
+                value={smell}
+                onChange={(e) => setSmell(e.target.value)}
+                className="border px-3 py-1 text-sm outline-none"
+                name=""
+                id=""
+              >
+                <option value=""></option>
+                <option value="citrus">Citrus</option>
+                <option value="oud">Owd</option>
+                <option value="sweet">Sweet</option>
+                <option value="rose">Rose</option>
+              </select>
+            )}
+            {productType === "bakhoor" && (
+              <select
+                required
+                value={smell}
+                onChange={(e) => setSmell(e.target.value)}
+                className="border px-3 py-1 text-sm outline-none"
+                name=""
+                id=""
+              >
+                <option value=""></option>
+                <option value="strong">Strong</option>
+                <option value="medium">Medium</option>
+                <option value="weak">Weak</option>
+              </select>
+            )}
 
             <div className="w-full flex items-center justify-center mt-3">
               <button className="inline-block text-center transition delay-100 ease-linear bg-primary-txt border border-transparent rounded-md py-2 px-8 font-medium text-white hover:bg-blk-txt">

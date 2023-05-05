@@ -28,15 +28,30 @@ function classNames(...classes) {
 }
 
 export default function Quickview() {
-    const { open, setOpen, quickviewProduct, handleClick, handlewish, setWtoltip, setToltip } = useContext(RapperContent)
+    const { open, setOpen, quickviewProduct, handleClick, setToltip, added_products } = useContext(RapperContent)
     const allBuyFunc = (e) => {
         setToltip(true)
         handleClick(e)
     }
-    const allwishFunc = (e) => {
-        setWtoltip(true)
-        handlewish(e)
-    }
+
+
+    const checkQuantity = (stock) => {
+        if (
+          added_products?.filter((item) => item.id === quickviewProduct?._id)?.length > 0
+        ) {
+          if (
+            stock >
+            added_products?.filter((item) => item.id === quickviewProduct?._id)?.[0]
+              ?.quantity
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return true;
+        }
+      };
 
     return (
         <Transition.Root show={open} as={Fragment}>
@@ -119,7 +134,7 @@ export default function Quickview() {
 
                                             <div className="flex items-center flex-wrap justify-between">
                                                 {
-                                                    quickviewProduct.stock ?
+                                                    quickviewProduct.stock > 0 && checkQuantity(quickviewProduct.stock) ?
                                                         <button
                                                             type="submit"
                                                             onClick={() => allBuyFunc(quickviewProduct)}

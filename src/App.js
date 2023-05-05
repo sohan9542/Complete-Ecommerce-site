@@ -18,6 +18,9 @@ import EditProduct from "./Components/Pages/admin/EditProduct";
 import OrderSuccess from "./Components/Pages/order/OrderSuccess";
 import AllOrder from "./Components/Pages/admin/AllOrder";
 import Profile from "./Components/Pages/Home/Profile/Profile";
+import Shop2 from "./Components/Pages/Shop/Shop2";
+import ProductDetails from "./Components/Pages/ProductDetails/ProductDetails";
+import Dashboard from "./Components/Pages/admin/Dashboard";
 
 export const RapperContent = createContext();
 export const URI = process.env.REACT_APP_API_URI;
@@ -44,7 +47,7 @@ const App = () => {
     let productSingle = {
       name: e.name,
       price: e.price,
-      quantity: findProduct.length + 1,
+      quantity: findProduct?.length > 0 ? findProduct?.[0]?.quantity + 1 : 1,
       image: e.images?.[0].url,
       product: e._id,
       id: e._id
@@ -92,6 +95,7 @@ const App = () => {
         isAuthenticated,
         setIsAuthenticated,
         loading,
+        setAdded_products
       }}
     >
       <Router>
@@ -104,8 +108,14 @@ const App = () => {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route exact path="/shop">
+          <Route exact path="/perfume">
             <Shop />
+          </Route>
+          <Route exact path="/bakhoor">
+            <Shop2 />
+          </Route>
+          <Route exact path="/product/:id">
+            <ProductDetails />
           </Route>
           <Route path="/sign-in">
             <Auth />
@@ -118,6 +128,13 @@ const App = () => {
           </Route>
 
           {/* protected routes */}
+          <ProtectedRoute
+            isAdmin={true}
+            exact
+            isAuthenticated={isAuthenticated}
+            path="/admin/dashboard"
+            component={Dashboard}
+          />
           <ProtectedRoute
             isAdmin={true}
             exact

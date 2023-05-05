@@ -12,7 +12,7 @@ const Shopnow = () => {
                         <h2 className="text-2xl font-extrabold text-gray-900">Collections</h2>
 
                         <div className="mt-6 space-y-12 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-6">
-                            {callouts.map((callout) => (
+                            {callouts.map((callout, ind) => (
                                 <div key={callout.name} className="group relative cursor-pointer">
                                     <div className="relative w-full h-80 bg-white  rounded-lg overflow-hidden ">
                                         <img
@@ -21,7 +21,7 @@ const Shopnow = () => {
                                             className="w-full h-full object-center object-cover"
                                         />
                                         <div className="group snow absolute top-40 z-10 left-20">
-                                            <Link to="/shop" className=" bg-primary-txt flex hover:bg-black text-white border-none items-center bg-tback py-2 px-4 ">Discover Now <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                            <Link to={ind === 0 ? "perfume?category=men" : "perfume?category=women"} className=" bg-primary-txt flex hover:bg-black text-white border-none items-center bg-tback py-2 px-4 ">Discover Now <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" /></svg></Link>
                                         </div>
                                     </div>

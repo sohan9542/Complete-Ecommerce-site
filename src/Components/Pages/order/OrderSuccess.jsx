@@ -8,7 +8,7 @@ const OrderSuccess = () => {
       <AiOutlineCheckCircle className="w-10 h-10 text-green-500"/>
 
       <h1 className="text-lg font-semibold mt-2">Your Order has been Placed successfully </h1>
-      <Link to="/orders" className="text-new mt-2">View Orders</Link>
+      <Link to="/profile" className="text-new mt-2">View Orders</Link>
     </div>
   );
 };

@@ -1,8 +1,13 @@
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
-import { ChevronDownIcon, FilterIcon } from "@heroicons/react/solid";
-import { StarIcon } from "@heroicons/react/solid";
+import {
+  ChevronDownIcon,
+  FilterIcon,
+  MinusSmIcon,
+  PlusSmIcon,
+  ViewGridIcon,
+} from "@heroicons/react/solid";
 
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import { Link } from "react-router-dom";
@@ -18,15 +23,14 @@ const sortOptions = [
   { name: "Price: High to Low", href: "#", current: false },
 ];
 
-const Shop = () => {
+const Shop2 = () => {
   const {
     handleClick,
-    handlewish,
+
     setOpen,
     setQuickviewProduct,
-    setWtoltip,
+
     setToltip,
-    added_products,
   } = useContext(RapperContent);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
@@ -38,54 +42,36 @@ const Shop = () => {
     handleClick(e);
     setToltip(true);
   };
-  const handleallWish = (e) => {
-    handlewish(e);
-    setWtoltip(true);
-  };
+
 
   // all product fetch
-  const params = new URLSearchParams(window.location.search);
-  let categoryParams = params.get("category");
-
-  const [currentUrl, setCurrentUrl] = useState(
-    `${URI}/api/v1/products?size=0&perfume=true`
-  );
+  const [currentUrl, setCurrentUrl] = useState(`${URI}/api/v1/products?size=0&bakhoor=true`);
   const [allProducts, setAllProducts] = useState(null);
   const [category, setCategory] = useState("");
   const [smell, setSmell] = useState("");
 
+  const params = new URLSearchParams(window.location.search);
+
   useEffect(() => {
     if (category !== "" && smell !== "") {
       setCurrentUrl(
-        `${URI}/api/v1/products?size=0&perfume=true&category=${category}&smell=${smell}`
+        `${URI}/api/v1/products?size=0&bakhoor=true&category=${category}&smell=${smell}`
       );
     } else {
       if (category !== "") {
-        setCurrentUrl(
-          `${URI}/api/v1/products?size=0&perfume=true&category=${category}`
-        );
+        setCurrentUrl(`${URI}/api/v1/products?size=0&bakhoor=true&category=${category}`);
       }
       if (smell !== "") {
-        setCurrentUrl(
-          `${URI}/api/v1/products?size=0&perfume=true&smell=${smell}`
-        );
+        setCurrentUrl(`${URI}/api/v1/products?size=0&bakhoor=true&smell=${smell}`);
       }
     }
   }, [category, smell]);
 
-  useEffect(() => {
-    if (categoryParams) {
-      setCategory(categoryParams);
-    }
-  }, []);
 
   useEffect(() => {
-    if (categoryParams && currentUrl === "") {
-      setCurrentUrl(
-        `${URI}/api/v1/products?size=0&perfume=true&category=${categoryParams}`
-      );
-    }
-    if (currentUrl !== "") {
+
+
+    if(currentUrl !== ''){
       var config = {
         method: "get",
         url: currentUrl,
@@ -100,29 +86,13 @@ const Shop = () => {
     }
 
     window.scrollTo(0, 0);
+  
   }, [currentUrl]);
 
-  const checkQuantity = (stock, newitem) => {
-    if (
-      added_products?.filter((item) => item.id === newitem?._id)?.length > 0
-    ) {
-      if (
-        stock >
-        added_products?.filter((item) => item.id === newitem?._id)?.[0]
-          ?.quantity
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return true;
-    }
-  };
-
+  
   const [sort, setSort] = useState(null);
   useEffect(() => {
-    let url = `${URI}/api/v1/products?size=0&perfume=true`;
+    let url = `${URI}/api/v1/products?size=0&bakhoor=true`;
     if (sort !== null) {
       if (sort === 0) {
         setCurrentUrl(url + "&new=true");
@@ -133,6 +103,7 @@ const Shop = () => {
       }
     }
   }, [sort]);
+
 
   return (
     <>
@@ -182,21 +153,7 @@ const Shop = () => {
                   </div>
 
                   {/* Filters */}
-                  <p className=" mt-3 mb-1">Categories</p>
-                  <select
-                    required
-                    value={category}
-                    onChange={(e) => {
-                      setCategory(e.target.value);
-                      setMobileFiltersOpen(false);
-                    }}
-                    className="border px-3 w-full py-1 text-sm outline-none"
-                    name=""
-                    id=""
-                  >
-                    <option value="men">Men</option>
-                    <option value="women">Women</option>
-                  </select>
+               
                   <p className=" mt-3 mb-1">Smell</p>
                   <select
                     required
@@ -208,10 +165,10 @@ const Shop = () => {
                     name=""
                     id=""
                   >
-                    <option value="citrus">Citrus</option>
-                    <option value="oud">Owd</option>
-                    <option value="sweet">Sweet</option>
-                    <option value="rose">Rose</option>
+                    <option value="strong">Strong</option>
+                    <option value="medium">medium</option>
+                    <option value="weak">Weak</option>
+                  
                   </select>
                 </div>
               </Transition.Child>
@@ -221,14 +178,14 @@ const Shop = () => {
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="relative z-10 flex items-baseline justify-between pt-24 pb-6 border-b border-border-clr">
               <h1 className="text-2xl text-center  font-medium text-blk-txt">
-                Perfume
+                Bakhoor
               </h1>
 
               <div className="flex items-center">
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
                     <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-                      {sort === null && "Sort"}
+                    {sort === null && "Sort"}
                       {sort === 0 && "Newest"}
                       {sort === 1 && "Price: Low to high"}
                       {sort === 2 && "Price: Hight to low"}
@@ -251,10 +208,7 @@ const Shop = () => {
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <div className="py-1">
                         {sortOptions.map((option, ind) => (
-                          <Menu.Item
-                            onClick={() => setSort(ind)}
-                            key={option.name}
-                          >
+                          <Menu.Item onClick={()=>setSort(ind)} key={option.name}>
                             {({ active }) => (
                               <a
                                 href={option.href}
@@ -291,31 +245,22 @@ const Shop = () => {
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-x-8 gap-y-10">
                 {/* Filters */}
                 <form className="hidden lg:block">
-                  <p className=" mt-3 mb-1">Categories</p>
+              
+                <p className=" mt-3 mb-1">Smell</p>
                   <select
                     required
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
+                    onChange={(e) => {
+                      setSmell(e.target.value);
+                      setMobileFiltersOpen(false);
+                    }}
                     className="border px-3 w-full py-1 text-sm outline-none"
                     name=""
                     id=""
                   >
-                    <option value="men">Men</option>
-                    <option value="women">Women</option>
-                  </select>
-                  <p className=" mt-3 mb-1">Smell</p>
-                  <select
-                    required
-                    //   value={smell}
-                    onChange={(e) => setSmell(e.target.value)}
-                    className="border px-3 w-full py-1 text-sm outline-none"
-                    name=""
-                    id=""
-                  >
-                    <option value="citrus">Citrus</option>
-                    <option value="oud">Owd</option>
-                    <option value="sweet">Sweet</option>
-                    <option value="rose">Rose</option>
+                    <option value="strong">Strong</option>
+                    <option value="medium">medium</option>
+                    <option value="weak">Weak</option>
+                  
                   </select>
                 </form>
 
@@ -333,12 +278,7 @@ const Shop = () => {
                           <div className="col-span-2 px-3 text-ash flex flex-col justify-center">
                             <p className="text-sm capitalize">{pro.category}</p>
                             <h2 className="py-2 text-primary-txt font-medium">
-                              <Link
-                                to={"/product/" + pro?._id}
-                                className="hover:text-new"
-                              >
-                                {pro.name}
-                              </Link>
+                              <Link to={"/product/"+ pro?._id} className="hover:text-new">{pro.name}</Link>
                             </h2>
                             <p className="text-sm">{pro.description}</p>
                             <p className="text-sm capitalize font-bold pt-3">
@@ -349,24 +289,50 @@ const Shop = () => {
                             <h1 className="px-2 text-lg font-semibold text-primary-txt py-1">
                               ${pro.price}
                             </h1>
-                            <div className="flex items-center">
-                              <div className="flex items-center">
-                                {[0, 1, 2, 3, 4].map((rating) => (
-                                  <StarIcon
-                                    key={pro?.ratings}
-                                    className={classNames(
-                                      pro?.ratings > rating
-                                        ? "text-yellow-500"
-                                        : "text-ash",
-                                      "h-5 w-5 flex-shrink-0"
-                                    )}
-                                    aria-hidden="true"
-                                  />
-                                ))}
-                              </div>
-                              <a className="ml-3 text-sm font-medium text-primary-txt hover:text-new">
-                                {pro?.numOfReviews} reviews
-                              </a>
+                            <div className="flex px-2 items-center gap-1 py-1">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 text-yellow-500 "
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 text-yellow-500 "
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 text-yellow-500 "
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 text-yellow-500 "
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 text-yellow-500 "
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
                             </div>
                             <div className="flex px-2 items-center justify-between py-1 text-ash">
                               <span
@@ -397,8 +363,7 @@ const Shop = () => {
                               </span>
                             </div>
                             <div style={{ width: "100%" }} className="px-2">
-                              {pro.stock > 0 &&
-                              checkQuantity(pro?.stock, pro) ? (
+                              {pro.stock ? (
                                 <div
                                   onClick={() => handleadtocart(pro)}
                                   className="border-1 border-primary-txt text-center transition delay-200 ease-linear text-primary-txt cursor-pointer py-2 hover:bg-primary-txt hover:text-white"
@@ -494,4 +459,4 @@ const Shop = () => {
   );
 };
 
-export default Shop;
+export default Shop2;

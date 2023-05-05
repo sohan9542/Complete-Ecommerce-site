@@ -14,7 +14,7 @@ import axios from "axios";
 import { RapperContent, URI, headerToken } from "../../../App";
 import { toast } from "react-toastify";
 import { useContext } from "react";
-import { useHistory } from "react-router-dom";
+
 import { useState } from "react";
 
 const Payment = () => {
@@ -37,8 +37,9 @@ const PaymentCompoent = () => {
   const payBtn = useRef(null);
 
   const paymentData = {
-    amount: Math.round(orderInfo.totalPrice * 100),
+    amount: Math.round(orderInfo.totalPrice),
   };
+
   let shippingInfo = JSON.parse(localStorage.getItem("shippingInfo"));
   const { added_products } = useContext(RapperContent);
 

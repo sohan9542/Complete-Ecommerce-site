@@ -213,6 +213,12 @@ const AllOrder = () => {
                         scope="col"
                         className="px-6 py-2 text-left text-xs font-bold text-gray-500  tracking-wider"
                       >
+                        User Name
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-2 text-left text-xs font-bold text-gray-500  tracking-wider"
+                      >
                         Order Date
                       </th>
                       <th
@@ -257,6 +263,9 @@ const AllOrder = () => {
                           }
                         >
                           <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
+                            <p>{item?.name}</p>
+                          </td>
+                          <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
                             <p>{item?.paidAt?.slice(0, 10)}</p>
                           </td>
                           <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
@@ -270,7 +279,7 @@ const AllOrder = () => {
                             <p>{item?.orderStatus}</p>
                           </td>
                           <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
-                            <p>{item?.orderStatus}</p>
+                            <p>{item?.note}</p>
                           </td>
 
                           <td className="px-4 py-2 text-gray-600 font-medium  whitespace-nowrap">
