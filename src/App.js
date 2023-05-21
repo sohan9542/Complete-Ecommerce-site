@@ -18,9 +18,14 @@ import EditProduct from "./Components/Pages/admin/EditProduct";
 import OrderSuccess from "./Components/Pages/order/OrderSuccess";
 import AllOrder from "./Components/Pages/admin/AllOrder";
 import Profile from "./Components/Pages/Home/Profile/Profile";
-import Shop2 from "./Components/Pages/Shop/Shop2";
+
 import ProductDetails from "./Components/Pages/ProductDetails/ProductDetails";
 import Dashboard from "./Components/Pages/admin/Dashboard";
+import Category from "./Components/Pages/admin/Category";
+import AddCategory from "./Components/Pages/admin/AddCategory";
+import Cupon from "./Components/Pages/admin/Cupon";
+import AddCupon from "./Components/Pages/admin/AddCupon";
+import EditCategory from "./Components/Pages/admin/EditCategory";
 
 export const RapperContent = createContext();
 export const URI = process.env.REACT_APP_API_URI;
@@ -108,12 +113,10 @@ const App = () => {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route exact path="/perfume">
+          <Route exact path="/shop/:productCategory">
             <Shop />
           </Route>
-          <Route exact path="/bakhoor">
-            <Shop2 />
-          </Route>
+   
           <Route exact path="/product/:id">
             <ProductDetails />
           </Route>
@@ -128,6 +131,20 @@ const App = () => {
           </Route>
 
           {/* protected routes */}
+          <ProtectedRoute
+            isAdmin={true}
+            exact
+            isAuthenticated={isAuthenticated}
+            path="/admin/cupon"
+            component={Cupon}
+          />
+          <ProtectedRoute
+            isAdmin={true}
+            exact
+            isAuthenticated={isAuthenticated}
+            path="/admin/add-cupon"
+            component={AddCupon}
+          />
           <ProtectedRoute
             isAdmin={true}
             exact
@@ -148,6 +165,27 @@ const App = () => {
             isAuthenticated={isAuthenticated}
             path="/admin/users"
             component={User}
+          />
+          <ProtectedRoute
+            isAdmin={true}
+            exact
+            isAuthenticated={isAuthenticated}
+            path="/admin/category"
+            component={Category}
+          />
+          <ProtectedRoute
+            isAdmin={true}
+            exact
+            isAuthenticated={isAuthenticated}
+            path="/admin/category/:catID"
+            component={EditCategory}
+          />
+          <ProtectedRoute
+            isAdmin={true}
+            exact
+            isAuthenticated={isAuthenticated}
+            path="/admin/add-category"
+            component={AddCategory}
           />
           <ProtectedRoute
             isAdmin={true}

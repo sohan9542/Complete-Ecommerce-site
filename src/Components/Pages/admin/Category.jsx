@@ -1,29 +1,29 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
-import { RiAdminFill } from "react-icons/ri";
 
+import { BiEdit } from "react-icons/bi";
 import { URI } from "../../../App";
 import Sidebar from "./Sidebar";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Tooltip } from "@mui/material";
 
 // import { toast } from "react-toastify";
-const User = () => {
-  const [allusers, setAllusers] = useState([]);
+const Category = () => {
+  const [allProducts, setAllProducts] = useState([]);
   const [reload, setReload] = useState(false);
 
   React.useEffect(() => {
     var config = {
       method: "get",
-      url: `${URI}/api/v1/admin/users`,
+      url: `${URI}/api/v1/category`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("Etoken")}`,
       },
     };
     axios(config)
       .then(function (response) {
-        setAllusers(response.data?.users);
+        setAllProducts(response.data?.category?.reverse());
       })
       .catch(function (error) {
         console.log(error);
@@ -34,59 +34,13 @@ const User = () => {
     }
   }, [reload]);
 
-  // const deleteUser = (id) => {
-  //   var config = {
-  //     method: "delete",
-  //     url: `${URI}/api/v1/admin/user/${id}`,
-  //     headers: {
-  //       Authorization: `Bearer ${localStorage.getItem("Etoken")}`,
-  //     },
-  //   };
-  //   axios(config)
-  //     .then(function (response) {
-  //       if (response.status === 200) {
-  //         setReload(true);
-  //         toast.success("Delete Successfully", {
-  //           position: "top-right",
-  //           autoClose: 3000,
-  //           hideProgressBar: false,
-  //           closeOnClick: true,
-  //           pauseOnHover: true,
-  //           draggable: true,
-  //           progress: undefined,
-  //         });
-  //       } else {
-  //         toast.error("Something went Wrong!", {
-  //           position: "top-right",
-  //           autoClose: 3000,
-  //           hideProgressBar: false,
-  //           closeOnClick: true,
-  //           pauseOnHover: true,
-  //           draggable: true,
-  //           progress: undefined,
-  //         });
-  //       }
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // };
-  const makeAdmin = (item) => {
-   
-    let data = JSON.stringify({
-      name: item.name,
-      email: item.email,
-      role: 'admin',
-    });
+  const deleteCategory = (id) => {
     var config = {
-      method: "put",
-      url: `${URI}/api/v1/admin/user/${item?._id}`,
+      method: "delete",
+      url: `${URI}/api/v1/admin/category/${id}`,
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("Etoken")}`,
       },
-      data: data
-
     };
     axios(config)
       .then(function (response) {
@@ -117,15 +71,20 @@ const User = () => {
         console.log(error);
       });
   };
-
   return (
     <div>
       <div className=" grid grid-cols-1 lg:grid-cols-5">
         <Sidebar />
         <div className=" mt-3 py-3 px-2 rounded-xl lg:col-span-4 bg-white shadow-sm">
           <h2 className=" font-semibold text-3xl text-gray-700 text-center mt-20">
-            Users
+            All Categories
           </h2>
+          <Link
+            className="text-sm px-3 py-2 text-white bg-green-500 rounded-md"
+            to="/admin/add-category"
+          >
+            Add Category
+          </Link>
           <div>
             <div className=" w-full    mt-4 overflow-x-scroll lg:overflow-hidden ">
               <table className="min-w-full ">
@@ -141,13 +100,7 @@ const User = () => {
                       scope="col"
                       className="px-6 py-2 text-left text-xs font-bold text-gray-500  tracking-wider"
                     >
-                      Email
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-2 text-left text-xs font-bold text-gray-500  tracking-wider"
-                    >
-                      Role
+                      Sub Names
                     </th>
 
                     <th
@@ -158,45 +111,46 @@ const User = () => {
                     </th>
                   </tr>
                 </thead>
-                {allusers.length != 0 && (
+                {allProducts.length != 0 && (
                   <tbody className="bg-white  text-sm">
-                    {allusers?.map((item, ind) => (
-                      <tr
-                        className={
-                          item?.status === 2 ? "bg-red-100" : "bg-white"
-                        }
-                      >
+                    {allProducts?.map((item, ind) => (
+                      <tr>
                         <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
-                          <p>{item?.name}</p>
+                          <p>{item?.title}</p>
                         </td>
                         <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
-                          <p>{item?.email}</p>
-                        </td>
-                        <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
-                          <p>{item?.role}</p>
+                          <div className=" flex items-center flex-col bg-green-50 px-2 py-1 gap-2 pr-20">
+                            {item?.subcategory?.map((i) => (
+                             <div className="flex items-center gap-2">
+                              <p>{i?.subTitle} : </p>
+                              {i?.options?.map((i) => (
+                                <p className="bg-green-500 text-white px-2 py-1 text-xs">
+                                  {i}
+                                </p>
+                              ))}
+                             </div>
+                            ))}
+
+                          
+                          </div>
                         </td>
 
                         <td className="px-4 py-2 text-gray-600 font-medium  whitespace-nowrap">
                           <div className=" flex items-center gap-2">
-                         {item?.role !== 'admin' && <Tooltip placement="top" title="Make admin">
-                              <button
-                                onClick={() => {
-                                  makeAdmin(item);
-                                }}
-                                className=" px-2 hover:bg-red-600 hover:text-white py-1 border-2 border-red-600 text-red-600 rounded-md text-sm"
-                              >
-                                <RiAdminFill className=" w-5 h-5 cursor-pointer" />
-                              </button>
-                            </Tooltip>}
-
-                            {/* <button
+                            <Link
+                              to={"/admin/category/" + item?._id}
+                              className=" px-2 hover:bg-red-600 hover:text-white py-1 border-2 border-red-600 text-red-600 rounded-md text-sm"
+                            >
+                              <BiEdit className=" w-5 h-5 cursor-pointer" />
+                            </Link>
+                            <button
                               onClick={() => {
-                                deleteUser(item?._id);
+                                deleteCategory(item?._id);
                               }}
                               className=" px-2 hover:bg-red-600 hover:text-white py-1 border-2 border-red-600 text-red-600 rounded-md text-sm"
                             >
                               <AiFillDelete className=" w-5 h-5 cursor-pointer" />
-                            </button> */}
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -212,4 +166,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default Category;

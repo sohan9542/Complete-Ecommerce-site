@@ -48,10 +48,17 @@ const Arrivals = () => {
     const [allProducts, setAllProducts] = useState([])
     const [bakhoors, setBakhoors] = useState([])
     useEffect(() => {
+
       var config = {
-        method: "get",
-        url: `${URI}/api/v1/products?size=0&perfume=true`,
-     
+        method: "post",
+        url: `${URI}/api/v1/products?size=0`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify({
+          subcategory: [],
+          category: 'perfume',
+        }),
       };
       axios(config)
         .then(function (response) {
@@ -63,11 +70,17 @@ const Arrivals = () => {
 
 
 
-      var config2= {
-        method: "get",
-        url: `${URI}/api/v1/products?size=0&bakhoor=true`,
-     
-      };
+        var config2 = {
+            method: "post",
+            url: `${URI}/api/v1/products?size=0`,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            data: JSON.stringify({
+              subcategory: [],
+              category: 'bakhoor',
+            }),
+          };
 
 
       axios(config2)
@@ -93,7 +106,7 @@ const Arrivals = () => {
                         }
                     </div>
                     <div className="flex justify-center items-center">
-                        <Link to="/perfume" className="text-center my-4 bg-new text-white px-3 ease-linear rounded py-2 transition delay-100 hover:bg-primary-txt">Load More</Link>
+                        <Link to="/shop/perfume" className="text-center my-4 bg-new text-white px-3 ease-linear rounded py-2 transition delay-100 hover:bg-primary-txt">Load More</Link>
                     </div>
                 </div>
 
@@ -109,7 +122,7 @@ const Arrivals = () => {
                         }
                     </div>
                     <div className="flex justify-center items-center">
-                        <Link to="/bakhoor" className="text-center my-4 bg-new text-white px-3 ease-linear rounded py-2 transition delay-100 hover:bg-primary-txt">Load More</Link>
+                        <Link to="/shop/bakhoor" className="text-center my-4 bg-new text-white px-3 ease-linear rounded py-2 transition delay-100 hover:bg-primary-txt">Load More</Link>
                     </div>
                 </div>
 

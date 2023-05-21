@@ -16,9 +16,30 @@ const EditProduct = () => {
   const [smell, setSmell] = useState("");
   const [stock, setStock] = useState(0);
   const [imagesPreview, setImagesPreview] = useState([]);
-  const [productType, setProductType] = useState("");
+  const [productType, setProductType] = useState({
+    productType: "",
+    tags: [""],
+  });
+  const [arrayCategory, setArrayCategory] = useState([]);
   const { id } = useParams();
   const history = useHistory();
+
+  React.useEffect(() => {
+    var config = {
+      method: "get",
+      url: `${URI}/api/v1/category`,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("Etoken")}`,
+      },
+    };
+    axios(config)
+      .then(function (response) {
+        setArrayCategory(response.data?.category);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
 
   const update = () => {
     let data = JSON.stringify({
@@ -27,9 +48,8 @@ const EditProduct = () => {
       stock: stock,
       price: price,
       images: images,
-      category: category,
-      smell: smell,
-      productType: productType,
+      tags: productType.tags,
+      productType: productType.productType,
     });
 
     let config = {
@@ -107,11 +127,16 @@ const EditProduct = () => {
         const product = response.data?.product;
         setName(product.name);
         setDescription(product.description);
-        setCategory(product.category);
-        setSmell(product.smell);
+
         setPrice(product.price);
         setStock(product.stock);
-        setProductType(product.productType);
+        let productTypeTemp = {
+          productType: "",
+          tags: [""],
+        };
+        productTypeTemp.productType = product.productType;
+        productTypeTemp.tags = product.tags;
+        setProductType({ ...productTypeTemp });
       })
       .catch(function (error) {
         console.log(error);
@@ -195,64 +220,50 @@ const EditProduct = () => {
             <p className=" mt-3 mb-1">Product Type</p>
             <select
               required
-              value={productType}
-              onChange={(e) => setProductType(e.target.value)}
+              value={productType.productType}
+              onChange={(e) => {
+                // setProductType(e.target.value)
+                let obj = productType;
+                obj.productType = e.target.value;
+                setProductType({ ...obj });
+              }}
               className="border px-3 py-1 text-sm outline-none"
               name=""
               id=""
             >
               <option value=""></option>
-              <option value="perfume">Perfume</option>
-              <option value="bakhoor">Bakhoor</option>
+              {arrayCategory?.map((item) => (
+                <option value={item?.title}>{item?.title}</option>
+              ))}
             </select>
-            {productType === "perfume" && (
-              <p className=" mt-3 mb-1">Category</p>
-            )}
-            {productType === "perfume" && (
-              <select
-                required
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="border px-3 py-1 text-sm outline-none"
-                name=""
-                id=""
-              >
-                <option value=""></option>
-                <option value="men">Men</option>
-                <option value="women">Women</option>
-              </select>
-            )}
-            <p className=" mt-3 mb-1">Smell</p>
-            {productType === "perfume" && (
-              <select
-                required
-                value={smell}
-                onChange={(e) => setSmell(e.target.value)}
-                className="border px-3 py-1 text-sm outline-none"
-                name=""
-                id=""
-              >
-                <option value=""></option>
-                <option value="citrus">Citrus</option>
-                <option value="oud">Owd</option>
-                <option value="sweet">Sweet</option>
-                <option value="rose">Rose</option>
-              </select>
-            )}
-            {productType === "bakhoor" && (
-              <select
-                required
-                value={smell}
-                onChange={(e) => setSmell(e.target.value)}
-                className="border px-3 py-1 text-sm outline-none"
-                name=""
-                id=""
-              >
-                <option value=""></option>
-                <option value="strong">Strong</option>
-                <option value="medium">Medium</option>
-                <option value="weak">Weak</option>
-              </select>
+
+            {productType.productType !== "" && (
+              <>
+                {arrayCategory
+                  .filter((i) => i?.title === productType.productType)?.[0]
+                  ?.subcategory?.map((item, ind) => (
+                    <>
+                      <p className=" mt-3 mb-1">{item?.subTitle}</p>
+                      <select
+                        required
+                        value={productType.tags[ind]}
+                        onChange={(e) => {
+                          let obj = productType;
+                          obj.tags[ind] = e.target.value;
+                          setProductType({ ...obj });
+                        }}
+                        className="border px-3 py-1 text-sm outline-none"
+                        name=""
+                        id=""
+                      >
+                        <option value=""></option>
+                        {item?.options?.map((op) => (
+                          <option value={op}>{op}</option>
+                        ))}
+                      </select>
+                    </>
+                  ))}
+              </>
             )}
 
             <div className="w-full flex items-center justify-center mt-3">

@@ -7,6 +7,7 @@ import {
   AiOutlineEye,
 } from "react-icons/ai";
 import { GoNote } from "react-icons/go";
+import { BiNetworkChart } from "react-icons/bi";
 
 import { URI } from "../../../App";
 import Sidebar from "./Sidebar";
@@ -16,6 +17,8 @@ import { Country, State, City } from "country-state-city";
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
+
+import Tooltip from '@mui/material/Tooltip';
 const AllOrder = () => {
   const [allProducts, setAllProducts] = useState([]);
 
@@ -269,7 +272,7 @@ const AllOrder = () => {
                             <p>{item?.paidAt?.slice(0, 10)}</p>
                           </td>
                           <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
-                            <p>${item?.totalPrice}</p>
+                            <p>£{item?.totalPrice}</p>
                           </td>
                           <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
                             <p>{item?.paymentInfo?.id}</p>
@@ -284,16 +287,38 @@ const AllOrder = () => {
 
                           <td className="px-4 py-2 text-gray-600 font-medium  whitespace-nowrap">
                             <div className=" flex items-center gap-2">
-                              {item.orderStatus !== "Delivered" && (
-                                <>
+                           
+                                  <>
+                                  {
+                                  item.orderStatus !== 'Processing' &&  <Tooltip placement="top" title="Mark as Processing">
+                                 
                                   <button
                                     onClick={() =>
-                                      updateorder(item?._id, "Delivered")
+                                      updateorder(item?._id, "Processing")
                                     }
                                     className=" px-2 cursor-pointer hover:bg-red-600 hover:text-white py-1 border-2 border-red-600 text-red-600 rounded-md text-sm"
                                   >
-                                    <AiOutlineCheckCircle className=" w-5 h-5 cursor-pointer" />
+                                    <BiNetworkChart className=" w-5 h-5 cursor-pointer" />
                                   </button>
+                                  </Tooltip>
+                                 }
+
+                                  {item.orderStatus !== "Delivered" && (
+                               <Tooltip placement="top" title="Mark as Deliverd">
+                               <button
+                                 onClick={() =>
+                                   updateorder(item?._id, "Delivered")
+                                 }
+                                 className=" px-2 cursor-pointer hover:bg-red-600 hover:text-white py-1 border-2 border-red-600 text-red-600 rounded-md text-sm"
+                               >
+                                 <AiOutlineCheckCircle className=" w-5 h-5 cursor-pointer" />
+                               </button>
+                               </Tooltip>
+                            )}
+                               
+                                 {
+                                  item.orderStatus !== 'Cancel' &&  <Tooltip placement="top" title="Mark as Cancel">
+                                 
                                   <button
                                     onClick={() =>
                                       updateorder(item?._id, "Cancel")
@@ -302,8 +327,11 @@ const AllOrder = () => {
                                   >
                                     <AiOutlineCloseCircle className=" w-5 h-5 cursor-pointer" />
                                   </button>
+                                  </Tooltip>
+                                 }
+                               
                                 </>
-                              )}
+                              <Tooltip placement="top" title="Order Details">
                               <button
                                 onClick={() => {
                                   setShowDetails(true);
@@ -313,6 +341,8 @@ const AllOrder = () => {
                               >
                                 <AiOutlineEye className=" w-5 h-5 cursor-pointer" />
                               </button>
+                              </Tooltip>
+                              <Tooltip placement="top" title="Add Note">
                               <button
                                 onClick={() => {
                                   setOpen(true);
@@ -322,6 +352,8 @@ const AllOrder = () => {
                               >
                                 <GoNote className=" w-5 h-5 cursor-pointer" />
                               </button>
+                              </Tooltip>
+                              <Tooltip placement="top" title="Delete">
                               <button
                                 onClick={() => {
                                   deleteOrder(item?._id);
@@ -330,6 +362,7 @@ const AllOrder = () => {
                               >
                                 <AiFillDelete className=" w-5 h-5 cursor-pointer" />
                               </button>
+                              </Tooltip>
                             </div>
                           </td>
                         </tr>
@@ -390,15 +423,13 @@ const ViewOrder = ({ order, updateorder, setShowDetails }) => {
             ).name
           }
         </p>
+ 
         <p className="text-lg">
-          <span className="font-bold">Tax: </span> ${order?.taxPrice}
-        </p>
-        <p className="text-lg">
-          <span className="font-bold">Shipping Price: </span> $
+          <span className="font-bold">Shipping Price: </span> £
           {order?.shippingPrice}
         </p>
         <p className="text-lg">
-          <span className="font-bold">Total Price: </span> ${order?.totalPrice}
+          <span className="font-bold">Total Price: </span> £{order?.totalPrice}
         </p>
 
         <div>

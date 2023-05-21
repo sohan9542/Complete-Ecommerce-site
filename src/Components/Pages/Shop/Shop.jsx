@@ -5,10 +5,12 @@ import { ChevronDownIcon, FilterIcon } from "@heroicons/react/solid";
 import { StarIcon } from "@heroicons/react/solid";
 
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useContext } from "react";
 import { RapperContent, URI } from "../../../App";
 import axios from "axios";
+import Rating from '@mui/material/Rating';
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -28,6 +30,7 @@ const Shop = () => {
     setToltip,
     added_products,
   } = useContext(RapperContent);
+  const { productCategory } = useParams();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const handlequickview = (e) => {
@@ -47,48 +50,49 @@ const Shop = () => {
   const params = new URLSearchParams(window.location.search);
   let categoryParams = params.get("category");
 
-  const [currentUrl, setCurrentUrl] = useState(
-    `${URI}/api/v1/products?size=0&perfume=true`
-  );
+  const [currentUrl, setCurrentUrl] = useState(`${URI}/api/v1/products?size=0`);
   const [allProducts, setAllProducts] = useState(null);
-  const [category, setCategory] = useState("");
-  const [smell, setSmell] = useState("");
+  const [category, setCategory] = useState([]);
 
-  useEffect(() => {
-    if (category !== "" && smell !== "") {
-      setCurrentUrl(
-        `${URI}/api/v1/products?size=0&perfume=true&category=${category}&smell=${smell}`
-      );
-    } else {
-      if (category !== "") {
-        setCurrentUrl(
-          `${URI}/api/v1/products?size=0&perfume=true&category=${category}`
-        );
-      }
-      if (smell !== "") {
-        setCurrentUrl(
-          `${URI}/api/v1/products?size=0&perfume=true&smell=${smell}`
-        );
-      }
-    }
-  }, [category, smell]);
+  const [categoryAll, setCategoryAll] = useState(null);
 
   useEffect(() => {
     if (categoryParams) {
-      setCategory(categoryParams);
+      setCategory([categoryParams]);
     }
-  }, []);
+
+    var config = {
+      method: "get",
+      url: `${URI}/api/v1/category`,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("Etoken")}`,
+      },
+    };
+    axios(config)
+      .then(function (response) {
+        setCategoryAll(
+          response.data?.category?.filter(
+            (item) => item.title === productCategory
+          )?.[0]
+        );
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, [categoryParams]);
 
   useEffect(() => {
-    if (categoryParams && currentUrl === "") {
-      setCurrentUrl(
-        `${URI}/api/v1/products?size=0&perfume=true&category=${categoryParams}`
-      );
-    }
     if (currentUrl !== "") {
       var config = {
-        method: "get",
+        method: "post",
         url: currentUrl,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: JSON.stringify({
+          subcategory: category,
+          category: productCategory,
+        }),
       };
       axios(config)
         .then(function (response) {
@@ -100,7 +104,26 @@ const Shop = () => {
     }
 
     window.scrollTo(0, 0);
-  }, [currentUrl]);
+  }, [currentUrl, category, productCategory]);
+
+  useEffect(() => {
+    if (localStorage.getItem("productCategory")) {
+      if (localStorage.getItem("productCategory") !== productCategory) {
+        if(categoryParams){
+          setCategory([categoryParams]);
+        }
+        else{
+          setCategory([]);
+        }
+       
+        localStorage.removeItem("productCategory")
+        localStorage.setItem("productCategory", productCategory)
+      }
+    }
+    else{
+      localStorage.setItem("productCategory", productCategory)
+    }
+  }, [productCategory]);
 
   const checkQuantity = (stock, newitem) => {
     if (
@@ -182,37 +205,28 @@ const Shop = () => {
                   </div>
 
                   {/* Filters */}
-                  <p className=" mt-3 mb-1">Categories</p>
-                  <select
-                    required
-                    value={category}
-                    onChange={(e) => {
-                      setCategory(e.target.value);
-                      setMobileFiltersOpen(false);
-                    }}
-                    className="border px-3 w-full py-1 text-sm outline-none"
-                    name=""
-                    id=""
-                  >
-                    <option value="men">Men</option>
-                    <option value="women">Women</option>
-                  </select>
-                  <p className=" mt-3 mb-1">Smell</p>
-                  <select
-                    required
-                    onChange={(e) => {
-                      setSmell(e.target.value);
-                      setMobileFiltersOpen(false);
-                    }}
-                    className="border px-3 w-full py-1 text-sm outline-none"
-                    name=""
-                    id=""
-                  >
-                    <option value="citrus">Citrus</option>
-                    <option value="oud">Owd</option>
-                    <option value="sweet">Sweet</option>
-                    <option value="rose">Rose</option>
-                  </select>
+                  {categoryAll?.subcategory?.map((item, ind) => (
+                    <>
+                      <p className=" mt-3 mb-1 capitalize">{item?.subTitle}</p>
+                      <select
+                        required
+                        value={category[ind]}
+                        onChange={(e) => {
+                          let temCat = category;
+                          temCat[ind] = e.target.value;
+                          setCategory([...temCat]);
+                          setMobileFiltersOpen(false);
+                        }}
+                        className="border px-3 w-full py-1 text-sm outline-none"
+                        name=""
+                        id=""
+                      >
+                        {item?.options?.map((i) => (
+                          <option value={i}>{i}</option>
+                        ))}
+                      </select>
+                    </>
+                  ))}
                 </div>
               </Transition.Child>
             </Dialog>
@@ -220,8 +234,8 @@ const Shop = () => {
 
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="relative z-10 flex items-baseline justify-between pt-24 pb-6 border-b border-border-clr">
-              <h1 className="text-2xl text-center  font-medium text-blk-txt">
-                Perfume
+              <h1 className="text-2xl text-center capitalize  font-medium text-blk-txt">
+                {productCategory}
               </h1>
 
               <div className="flex items-center">
@@ -291,32 +305,33 @@ const Shop = () => {
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-x-8 gap-y-10">
                 {/* Filters */}
                 <form className="hidden lg:block">
-                  <p className=" mt-3 mb-1">Categories</p>
-                  <select
-                    required
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="border px-3 w-full py-1 text-sm outline-none"
-                    name=""
-                    id=""
+                  <button
+                    onClick={() => setCategory([])}
+                    className="px-3 py-2 text-sm text-white bg-primary-txt rounded-md"
                   >
-                    <option value="men">Men</option>
-                    <option value="women">Women</option>
-                  </select>
-                  <p className=" mt-3 mb-1">Smell</p>
-                  <select
-                    required
-                    //   value={smell}
-                    onChange={(e) => setSmell(e.target.value)}
-                    className="border px-3 w-full py-1 text-sm outline-none"
-                    name=""
-                    id=""
-                  >
-                    <option value="citrus">Citrus</option>
-                    <option value="oud">Owd</option>
-                    <option value="sweet">Sweet</option>
-                    <option value="rose">Rose</option>
-                  </select>
+                    Reset
+                  </button>
+                  {categoryAll?.subcategory?.map((item, ind) => (
+                    <>
+                      <p className=" mt-3 mb-1 capitalize">{item?.subTitle}</p>
+                      <select
+                        required
+                        value={category[ind]}
+                        onChange={(e) => {
+                          let temCat = category;
+                          temCat[ind] = e.target.value;
+                          setCategory([...temCat]);
+                        }}
+                        className="border px-3 w-full py-1 text-sm outline-none"
+                        name=""
+                        id=""
+                      >
+                        {item?.options?.map((i) => (
+                          <option value={i}>{i}</option>
+                        ))}
+                      </select>
+                    </>
+                  ))}
                 </form>
 
                 <div className="lg:col-span-3">
@@ -324,7 +339,10 @@ const Shop = () => {
                     {allProducts?.products?.map((pro) => (
                       <>
                         <div className="grid lg:grid-cols-4 md:grid-cols-1 md:justify-center md:items-center sm:justify-center sm:items-center sm:grid-cols-1 py-2 border-b border-border-clr mx-2">
-                          <div style={{ margin: "0 auto" }}>
+                          <div
+                            className="w-40 object-cover"
+                            style={{ margin: "0 auto" }}
+                          >
                             <img
                               src={pro?.images?.[0]?.url}
                               alt={pro?.images?.[0]?.url}
@@ -341,28 +359,23 @@ const Shop = () => {
                               </Link>
                             </h2>
                             <p className="text-sm">{pro.description}</p>
-                            <p className="text-sm capitalize font-bold pt-3">
-                              {pro.smell}
-                            </p>
+                            <div className="flex items-center gap-2 pt-3">
+                              {pro?.tags?.map((item) => (
+                                <p className="text-sm capitalize text-new font-bold ">
+                                  #{item}
+                                </p>
+                              ))}
+                            </div>
                           </div>
                           <div className="flex flex-col px-3 justify-center">
                             <h1 className="px-2 text-lg font-semibold text-primary-txt py-1">
-                              ${pro.price}
+                              £{pro.price}
                             </h1>
                             <div className="flex items-center">
                               <div className="flex items-center">
-                                {[0, 1, 2, 3, 4].map((rating) => (
-                                  <StarIcon
-                                    key={pro?.ratings}
-                                    className={classNames(
-                                      pro?.ratings > rating
-                                        ? "text-yellow-500"
-                                        : "text-ash",
-                                      "h-5 w-5 flex-shrink-0"
-                                    )}
-                                    aria-hidden="true"
-                                  />
-                                ))}
+                             
+                                 {pro?.ratings !== 0 && <Rating name="half-rating-read" defaultValue={pro.ratings} precision={0.5} readOnly />  }
+                                 {pro?.ratings === 0 && <Rating name="half-rating-read" defaultValue={0} precision={0.5} readOnly />  }
                               </div>
                               <a className="ml-3 text-sm font-medium text-primary-txt hover:text-new">
                                 {pro?.numOfReviews} reviews

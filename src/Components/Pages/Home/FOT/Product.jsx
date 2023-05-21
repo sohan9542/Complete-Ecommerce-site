@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { RapperContent } from "../../../../App";
 
 const Product = ({ product }) => {
-  const { handleClick } = useContext(RapperContent);
-  const { setOpen, setQuickviewProduct, setToltip, added_products } =
+  const { handleClick, setToltip } = useContext(RapperContent);
+  const { setOpen, setQuickviewProduct,  added_products } =
     useContext(RapperContent);
 
   const setEverything = (e) => {
@@ -108,9 +108,9 @@ const Product = ({ product }) => {
                 {product.name?.slice(0, 15)}
               </Link>
             </h3>
-            <p className="mt-1 text-sm text-gray-500">{product.smell}</p>
+            {/* <p className="mt-1 text-sm text-gray-500">{product.smell}</p> */}
           </div>
-          <p className="text-lg font-bold text-primary-txt">${product.price}</p>
+          <p className="text-lg font-bold text-primary-txt">£{product.price}</p>
         </div>
       </div>
     </div>

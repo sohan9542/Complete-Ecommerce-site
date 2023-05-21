@@ -4,12 +4,10 @@ import { MenuIcon, SearchIcon, XIcon } from "@heroicons/react/outline";
 import { Link } from "react-router-dom";
 import { ChevronDownIcon } from "@heroicons/react/solid";
 import { useContext } from "react";
-import { RapperContent, URI, headerToken } from "../../../App";
+import { RapperContent, URI } from "../../../App";
 import Addproduct from "./Addproduct";
-
-import { Disclosure } from "@headlessui/react";
-import { MinusSmIcon, PlusSmIcon } from "@heroicons/react/solid";
 import { useEffect } from "react";
+import { FiSearch } from "react-icons/fi";
 import axios from "axios";
 import CheckOut from "../../Pages/order/Checkout";
 import Payment from "../../Pages/order/Payment";
@@ -20,14 +18,14 @@ function classNames(...classes) {
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [cartopen, setCartopen] = useState(false);
-  const { added_products,  isAuthenticated } =
-    useContext(RapperContent);
+  const { added_products, isAuthenticated } = useContext(RapperContent);
+  // console.log("added_products", added_products)
   const uniqueObjects = [
     ...new Map(added_products.map((item) => [item._id, item])).values(),
   ];
   let arr = [];
   added_products.forEach((e) => {
-    arr = [...arr, e.price];
+    arr = [...arr, e.price * e.quantity];
   });
 
   const price = arr.reduce((total, num) => total + num, 0);
@@ -37,9 +35,9 @@ export default function Navbar() {
       method: "get",
       maxBodyLength: Infinity,
       url: `${URI}/api/v1/me`,
-      headers:{
+      headers: {
         Authorization: `Bearer ${localStorage.getItem("Etoken")}`,
-      }
+      },
     };
 
     axios
@@ -56,25 +54,83 @@ export default function Navbar() {
 
   const [step, setStep] = useState(1);
 
-  const shippingCharges = price > 1000 ? 0 : 40;
+  const shippingCharges = price > 100 ? 0 : 5;
+const [discount, setDiscount] = useState(0)
 
-  const tax = price * 0.18;
+  let totalPrice= 0
 
-  const totalPrice = price + tax + shippingCharges;
+  
+  totalPrice  = (price + shippingCharges - (price * (discount / 100))).toFixed(2);
+  useEffect(() => {
+    var config = {
+      method: "get",
+      url: `${URI}/api/v1/category`,
+    };
+    axios(config)
+      .then(function (response) {
+        setNavBarRoutes(response.data?.category);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
 
   const proceedPayment = () => {
+   
+   
+    
+  
     const data = {
       price,
       shippingCharges,
-      tax,
       totalPrice,
+      discount,
     };
 
     sessionStorage.setItem("orderInfo", JSON.stringify(data));
   };
   const logout = () => {
     localStorage.removeItem("Etoken");
-    window.location.href = "/"
+    window.location.href = "/";
+  };
+
+  const [navBarRoutes, setNavBarRoutes] = useState([]);
+  useEffect(() => {
+    var config = {
+      method: "get",
+      url: `${URI}/api/v1/category`,
+    };
+    axios(config)
+      .then(function (response) {
+        setNavBarRoutes(response.data?.category);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    setStep(1);
+  }, [added_products]);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchItem, setSearchItem] = useState(null);
+  const searchProduct = (input) => {
+    if (input !== "") {
+      var config = {
+        method: "get",
+        url: `${URI}/api/v1/product/find?search=${input}`,
+      };
+      axios(config)
+        .then(function (response) {
+          setSearchItem(response.data?.products);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+    if (input === "") {
+      setSearchItem(null);
+    }
   };
   return (
     <>
@@ -137,6 +193,25 @@ export default function Navbar() {
                           Home
                         </Link>
                       </Tab>
+                      {navBarRoutes.map((navitem) => (
+                        <Tab
+                          className={({ selected }) =>
+                            classNames(
+                              selected
+                                ? "text-primary-txt"
+                                : "text-gray-900 border-transparent",
+                              "py-1"
+                            )
+                          }
+                        >
+                          <Link
+                            className="hover:text-new capitalize"
+                            to={`/shop/${navitem?.title}`}
+                          >
+                            {navitem?.title}
+                          </Link>
+                        </Tab>
+                      ))}
                       <Tab
                         className={({ selected }) =>
                           classNames(
@@ -147,31 +222,15 @@ export default function Navbar() {
                           )
                         }
                       >
-                        <Link className="hover:text-new" to="/shop">
-                          {" "}
-                          Shop
-                        </Link>
+                        {isAuthenticated && isAdmin && (
+                          <Link
+                            to="/admin/dashboard"
+                            className="text-sm   transition duration-300 ease-linear font-medium text-gray-700 hover:text-primary-txt"
+                          >
+                            Admin
+                          </Link>
+                        )}
                       </Tab>
-                      <Tab
-                        className={({ selected }) =>
-                          classNames(
-                            selected
-                              ? "text-primary-txt"
-                              : "text-gray-900 border-transparent",
-                            "py-1"
-                          )
-                        }
-                      >
-                           {isAuthenticated && isAdmin && (
-                    <Link
-                      to="/admin/dashboard"
-                      className="text-sm   transition duration-300 ease-linear font-medium text-gray-700 hover:text-primary-txt"
-                    >
-                      Admin
-                    </Link>
-                  )}
-                      </Tab>
-                      
                     </Tab.List>
                     {/* <Disclosure as="div" className="px-4 py-6 ">
                       {({ open }) => (
@@ -277,32 +336,37 @@ export default function Navbar() {
                     </Disclosure> */}
                   </div>
                 </Tab.Group>
-             
-             {isAuthenticated === false  &&   <div className="border-t border-border-clr my-6 py-6 px-4 space-y-6">
-                  <div className="flow-root">
-                    <Link
-                      to="/sign-in"
-                      className="-m-2 p-2 block font-medium text-gray-900 hover:text-primary-txt"
-                    >
-                      Sign in
-                    </Link>
+
+                {isAuthenticated === false && (
+                  <div className="border-t border-border-clr my-6 py-6 px-4 space-y-6">
+                    <div className="flow-root">
+                      <Link
+                        to="/sign-in"
+                        className="-m-2 p-2 block font-medium text-gray-900 hover:text-primary-txt"
+                      >
+                        Sign in
+                      </Link>
+                    </div>
+                    <div className="flow-root">
+                      <Link
+                        to="/sign-up"
+                        className="-m-2 p-2 block transition font-medium text-gray-900 hover:text-primary-txt"
+                      >
+                        Create account
+                      </Link>
+                    </div>
                   </div>
-                  <div className="flow-root">
-                    <Link
-                      to="/sign-up"
-                      className="-m-2 p-2 block transition font-medium text-gray-900 hover:text-primary-txt"
+                )}
+                {isAuthenticated && (
+                  <div className=" w-full flex items-center justify-center">
+                    <button
+                      onClick={logout}
+                      className=" px-2 mt-10  items-center gap-2 ml-2 cursor-pointer hover:bg-primary-txt hover:text-white py-1 border-2 border-primary-txt text-primary-txt rounded-md text-sm"
                     >
-                      Create account
-                    </Link>
+                      Log Out
+                    </button>
                   </div>
-                </div>}
-                {isAuthenticated &&   <div className=" w-full flex items-center justify-center">
-                  <button
-            onClick={logout}
-            className=" px-2 mt-10  items-center gap-2 ml-2 cursor-pointer hover:bg-primary-txt hover:text-white py-1 border-2 border-primary-txt text-primary-txt rounded-md text-sm"
-          >
-            Log Out
-          </button></div>}
+                )}
               </div>
             </Transition.Child>
           </Dialog>
@@ -310,7 +374,7 @@ export default function Navbar() {
 
         <header className="relative bg-white">
           <p className="bg-gray h-10 flex items-center justify-center text-sm font-medium text-ash px-4 sm:px-6 lg:px-8">
-            Get free delivery on orders over $100
+            Get free delivery on orders over £100
           </p>
 
           <nav
@@ -329,7 +393,7 @@ export default function Navbar() {
                 </button>
 
                 {/* Logo */}
-                <div className="ml-4 flex lg:ml-0">
+                <div className=" flex ">
                   <Link to="/">
                     <h1 className="text-3xl font font-bold tracking-tight text-blk-txt ">
                       PERFUME
@@ -338,52 +402,76 @@ export default function Navbar() {
                 </div>
 
                 {/* Flyout menus */}
-             
-                <Popover.Group as="nav" className="hidden md:flex ml-8">
-                  <Popover className="relative">
-                    {({ open }) => (
-                      <>
-                        <Popover.Button
-                          className={classNames(
-                            open
-                              ? "border-primary-txt text-primary-txt"
-                              : "text-gray-500 ",
-                            "group bg-white rounded-md inline-flex items-center text-sm font-medium hover:text-gray-900 "
-                          )}
-                        >
-                          <span className="font-sm mb-1">Perfume</span>
-                          <ChevronDownIcon
-                            className={classNames(
-                              open ? "text-primary-txt" : "text-gray-400",
-                              "ml-2 mb-1 h-5 w-5 group-hover:text-gray-500"
-                            )}
-                            aria-hidden="true"
-                          />
-                        </Popover.Button>
 
-                        <Transition
-                          as={Fragment}
-                          enter="transition ease-out duration-200"
-                          enterFrom="opacity-0 translate-y-1"
-                          enterTo="opacity-100 translate-y-0"
-                          leave="transition ease-in duration-150"
-                          leaveFrom="opacity-100 translate-y-0"
-                          leaveTo="opacity-0 translate-y-1"
-                        >
-                          <Popover.Panel className="absolute z-10 left-1/2 transform -translate-x-1/2 mt-3 px-5 w-screen max-w-md sm:px-0">
-                            <div className="rounded-lg shadow-lg  overflow-hidden">
-                              <div className="relative grid gap-3 bg-white px-2 py-3 sm:gap-8 sm:p-8">
-                                <Link
-                                  to="/perfume?category=men"
-                                  className=" flex items-center rounded-lg hover:text-primary-txt"
-                                >
-                                  <div className="ml-4">
-                                    <p className="text-base font-medium text-gray-900">
-                                      Men
-                                    </p>
-                                  </div>
-                                </Link>
-                                <Link
+                {navBarRoutes.map((item, ind) => (
+                  <Popover.Group
+                    key={ind}
+                    as="nav"
+                    className="hidden md:flex ml-8"
+                  >
+                    <Popover className="relative">
+                      {({ open }) => (
+                        <div className="flex items-center gap-1">
+                          <Link
+                            to={`/shop/${item?.title}`}
+                            className="font-sm hover:text-primary-txt text-sm  capitalize"
+                          >
+                            {item?.title}
+                          </Link>
+                          <Popover.Button
+                            className={classNames(
+                              open
+                                ? "border-primary-txt text-primary-txt"
+                                : "text-gray-500 ",
+                              ""
+                            )}
+                          >
+                            {item?.subcategory?.find(
+                              (f) => f.navbarShow === true
+                            ) && (
+                              <ChevronDownIcon
+                                className={classNames(
+                                  open ? "text-primary-txt" : "text-gray-400",
+                                  "ml-2  h-5 w-5 group-hover:text-gray-500"
+                                )}
+                                aria-hidden="true"
+                              />
+                            )}
+                          </Popover.Button>
+
+                          <Transition
+                            as={Fragment}
+                            enter="transition ease-out duration-200"
+                            enterFrom="opacity-0 translate-y-1"
+                            enterTo="opacity-100 translate-y-0"
+                            leave="transition ease-in duration-150"
+                            leaveFrom="opacity-100 translate-y-0"
+                            leaveTo="opacity-0 translate-y-1"
+                          >
+                            <Popover.Panel className="absolute z-10 left-1/2 transform -translate-x-1/2 mt-40 px-5 w-screen max-w-md sm:px-0">
+                              <div className="rounded-lg shadow-lg  overflow-hidden">
+                                {item?.subcategory?.map((i) => (
+                                  <>
+                                    {i?.navbarShow && (
+                                      <div className="relative grid gap-3 bg-white px-2 py-3 sm:gap-8 sm:p-8">
+                                        {i?.options?.map((idx) => (
+                                          <Link
+                                            to={`/shop/${item.title}?category=${idx}`}
+                                            className=" flex items-center rounded-lg hover:text-primary-txt"
+                                          >
+                                            <div className="ml-4">
+                                              <p className="text-base capitalize font-medium text-gray-900">
+                                                {idx}
+                                              </p>
+                                            </div>
+                                          </Link>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </>
+                                ))}
+
+                                {/* <Link
                                   to="/perfume?category=women"
                                   className=" flex items-start rounded-lg hover:text-primary-txt"
                                 >
@@ -392,17 +480,16 @@ export default function Navbar() {
                                       Women
                                     </p>
                                   </div>
-                                </Link>
-                          
+                                </Link> */}
                               </div>
-                            </div>
-                          </Popover.Panel>
-                        </Transition>
-                      </>
-                    )}
-                  </Popover>
-                </Popover.Group>
-                <Popover.Group className="hidden lg:ml-8 lg:block lg:self-stretch">
+                            </Popover.Panel>
+                          </Transition>
+                        </div>
+                      )}
+                    </Popover>
+                  </Popover.Group>
+                ))}
+                {/* <Popover.Group className="hidden lg:ml-8 lg:block lg:self-stretch">
                   <div className="h-full flex space-x-8">
                     <Popover className="flex">
                       {({ open }) => (
@@ -427,7 +514,7 @@ export default function Navbar() {
                     </Popover>
             
                   </div>
-                </Popover.Group>
+                </Popover.Group> */}
                 <div className="ml-auto flex items-center">
                   {isAuthenticated === false && (
                     <div className="hidden lg:flex lg:flex-1 mr-4 lg:items-center lg:justify-end lg:space-x-6">
@@ -458,7 +545,17 @@ export default function Navbar() {
                     </Link>
                   )}
                   {/* Cart */}
-              
+
+                  <div className="ml-4 flow-root lg:ml-5">
+                    <div
+                      className="group cursor-pointer -m-2 p-2 flex items-center"
+                      onClick={() => setSearchOpen(true)}
+                    >
+                      <span class="relative inline-block">
+                        <FiSearch className="w-5 h-5" />
+                      </span>
+                    </div>
+                  </div>
                   <div className="ml-4 flow-root lg:ml-5">
                     <div
                       className="group cursor-pointer -m-2 p-2 flex items-center"
@@ -485,18 +582,22 @@ export default function Navbar() {
                       </span>
                     </div>
                   </div>
-                {isAuthenticated &&  <Link
-                    to="/profile"
-                    className="ml-4 px-3 py-2 cursor-pointer rounded-full bg-primary-txt text-xl "
-                  >
-                    P
-                  </Link>}
-                {isAuthenticated &&    <button
-            onClick={logout}
-            className=" px-2 hidden lg:flex  items-center gap-2 ml-2 cursor-pointer hover:bg-primary-txt hover:text-white py-1 border-2 border-primary-txt text-primary-txt rounded-md text-sm"
-          >
-            Log Out
-          </button>}
+                  {isAuthenticated && (
+                    <Link
+                      to="/profile"
+                      className="ml-4 px-3 py-2 cursor-pointer rounded-full bg-primary-txt text-xl "
+                    >
+                      P
+                    </Link>
+                  )}
+                  {isAuthenticated && (
+                    <button
+                      onClick={logout}
+                      className=" px-2 hidden lg:flex  items-center gap-2 ml-2 cursor-pointer hover:bg-primary-txt hover:text-white py-1 border-2 border-primary-txt text-primary-txt rounded-md text-sm"
+                    >
+                      Log Out
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -586,34 +687,33 @@ export default function Navbar() {
                         <>
                           <div className="flex justify-between text-base font-medium text-gray-900">
                             <p>Subtotal</p>
-                            <p>${price}</p>
+                            <p>£{price}</p>
                           </div>
-                          {step === 3  && (
+                          {step === 3 && (
                             <>
                               <div className="flex justify-between text-base font-medium text-gray-900">
                                 <p>Shipping Charges:</p>
-                                <p>${shippingCharges}</p>
+                                <p>£{shippingCharges}</p>
                               </div>
                               <div className="flex justify-between text-base font-medium text-gray-900">
-                                <p>GST:</p>
-                                <p>${tax.toFixed(3)}</p>
-                              </div>
-                              <div className="flex border-t mt-3 justify-between text-base font-medium text-gray-900">
-                                <p className="text-2xl">TOTAL:</p>
-                                <p className="text-2xl">${totalPrice}</p>
+                                <p>Discount:</p>
+                                <p>{discount}%</p>
                               </div>
 
-                          
+                              <div className="flex border-t mt-3 justify-between text-base font-medium text-gray-900">
+                                <p className="text-2xl">TOTAL:</p>
+                                <p className="text-2xl">£{totalPrice}</p>
+                              </div>
                             </>
                           )}
-                         
+
                           {step === 1 && (
                             <p className="mt-0.5 text-sm text-gray-500">
-                              Shipping and taxes calculated at checkout.
+                              Shipping calculated at checkout.
                             </p>
                           )}
                           <div className="mt-6">
-                            { isAuthenticated && step === 1 && (
+                            {isAuthenticated && step === 1 && (
                               <div
                                 onClick={() => setStep(2)}
                                 className="flex cursor-pointer justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-txt hover:bg-new"
@@ -621,24 +721,26 @@ export default function Navbar() {
                                 Continue
                               </div>
                             )}
-                            {
-                              !isAuthenticated && step === 1 &&   <Link  onClick={()=>setCartopen(false)} to="/sign-in"
-                           
-                              className="flex cursor-pointer justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-txt hover:bg-new"
-                            >
-                               Log in Or Create Account
-                            </Link>
-                            }
+                            {!isAuthenticated && step === 1 && (
+                              <Link
+                                onClick={() => setCartopen(false)}
+                                to="/sign-in"
+                                className="flex cursor-pointer justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-txt hover:bg-new"
+                              >
+                                Log in Or Create Account
+                              </Link>
+                            )}
                           </div>
                         </>
                       )}
                       {step === 2 && (
                         <CheckOut
+                        setDiscount2={setDiscount}
                           proceedPayment={proceedPayment}
                           setStep={setStep}
                         />
                       )}
-                      {step === 3 && <Payment/>}
+                      {step === 3 && <Payment />}
                       <div className="mt-6 flex justify-center text-sm text-center text-gray-500">
                         <p>
                           or{" "}
@@ -660,7 +762,139 @@ export default function Navbar() {
           </div>
         </Dialog>
       </Transition.Root>
+      <Transition.Root show={searchOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="fixed inset-0 z-30"
+          onClose={() => setSearchOpen(false)}
+        >
+          <div className="absolute inset-0">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-in-out duration-500"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in-out duration-500"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <Dialog.Overlay className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+            </Transition.Child>
 
+            <div className="fixed inset-y-0 right-0 pl-10 max-w-full flex">
+              <Transition.Child
+                as={Fragment}
+                enter="transform transition ease-in-out duration-500 sm:duration-700"
+                enterFrom="translate-x-full"
+                enterTo="translate-x-0"
+                leave="transform transition ease-in-out duration-500 sm:duration-700"
+                leaveFrom="translate-x-0"
+                leaveTo="translate-x-full"
+              >
+                <div className="w-screen max-w-md bg-white">
+                  <div className="flex items-start justify-between px-4 py-2 bg-white border-b mb-3">
+                    <Dialog.Title className="text-lg font-medium text-gray-900">
+                      Search Products
+                    </Dialog.Title>
+                    <div className="ml-3 h-7 flex items-center">
+                      <button
+                        type="button"
+                        className="-m-2 p-2 text-gray-400 hover:text-gray-500"
+                        onClick={() => setSearchOpen(false)}
+                      >
+                        <span className="sr-only">Close panel</span>
+                        <XIcon className="h-6 w-6" aria-hidden="true" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="h-full flex flex-col bg-white shadow-xl overflow-y-scroll">
+                    <div className="flex-1 py-2 overflow-y-auto px-4 sm:px-6">
+                      <div>
+                        <input
+                          onChange={(e) => searchProduct(e.target.value)}
+                          placeholder="Search By Name"
+                          className="border w-full px-2 py-2 rounded-md outline-none"
+                          type="text"
+                        />
+                        <div className="flow-root">
+                          <ul className="-my-6 divide-y divide-border-clr">
+                            {searchItem !== null && (
+                              <>
+                                {searchItem?.length !== 0 ? (
+                                  <>
+                                    {searchItem?.map((product) => (
+                                      <SearchProduct
+                                        key={product?._id}
+                                        product={product}
+                                      />
+                                    ))}
+                                  </>
+                                ) : (
+                                  <div className="h-full py-32 text-center text-new text-xl">
+                                    No Product Found
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition.Root>
     </>
   );
 }
+
+const SearchProduct = ({ product }) => {
+  const { handleClick, setToltip } = useContext(RapperContent);
+console.log('product', product)
+  return (
+    <>
+      <li className="py-6 flex mt-2">
+        <div className="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md ">
+          <img
+            src={product?.images?.[0]?.url}
+            alt={product?.images?.[0]?.url}
+            className="w-full h-full object-center object-contain"
+          />
+        </div>
+
+        <div className="ml-4 flex-1 flex flex-col">
+          <div>
+            <div className="flex justify-between text-base font-medium text-gray-900">
+              <h3>
+                <Link to={"/product/" + product?._id}>{product?.name}</Link>
+              </h3>
+              <p className="ml-4">£{product?.price}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              {product?.tags?.map((item) => (
+                <p className="mt-1 text-sm text-new">#{item}</p>
+              ))}
+            </div>
+          </div>
+          <div className="flex-1 flex items-center justify-center text-sm">
+            <div className="flex">
+              <button
+                onClick={() => {
+                  setToltip(true);
+                  handleClick(product);
+                }}
+                type="button"
+                className="font-medium bg-primary-txt text-white px-2 py-1 text-sm rounded-md"
+              >
+                Add to cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </li>
+    </>
+  );
+};

@@ -10,6 +10,7 @@ import axios from 'axios'
 const Products = () => {
     // const TrendyProduct = products.slice(0, 4)
     const [allProducts, setAllProducts] = useState([])
+    
     useEffect(() => {
       var config = {
         method: "get",
@@ -23,7 +24,6 @@ const Products = () => {
         .catch(function (error) {
           console.log(error);
         });
-    
     
     }, []);
     return (

@@ -11,30 +11,46 @@ const CreateProduct = () => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
   const [images, setImages] = useState([]);
-  const [category, setCategory] = useState("");
-  const [smell, setSmell] = useState("");
   const [stock, setStock] = useState(0);
   const [imagesPreview, setImagesPreview] = useState([]);
-  const [productType, setProductType] = useState('')
-  const history = useHistory()
+  const [productType, setProductType] = useState({
+    productType: "",
+    tags: [""],
+  });
+  const history = useHistory();
+  const [arrayCategory, setArrayCategory] = useState([]);
+  React.useEffect(() => {
+    var config = {
+      method: "get",
+      url: `${URI}/api/v1/category`,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("Etoken")}`,
+      },
+    };
+    axios(config)
+      .then(function (response) {
+        setArrayCategory(response.data?.category);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
   const create = () => {
-
     let data = JSON.stringify({
-      "name": name,
-      "description": description,
-      "stock": stock,
-      "price": price,
-      "images": images,
-      "category": category,
-      "smell": smell,
-      "productType": productType
+      name: name,
+      description: description,
+      stock: stock,
+      price: price,
+      images: images,
+      tags: productType.tags,
+      productType: productType.productType,
     });
-    
+
     let config = {
       method: "post",
       url: `${URI}/api/v1/admin/product/new`,
-      headers:{
-        'Content-Type': 'application/json', 
+      headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("Etoken")}`,
       },
       data: data,
@@ -43,22 +59,22 @@ const CreateProduct = () => {
     axios
       .request(config)
       .then((response) => {
-      if(response.data?.success){
-        toast.success("Product Created Successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-     
-       setTimeout(() => {
-        history.push("/admin/products")
-       }, 2500);
-      }
+        if (response.data?.success) {
+          toast.success("Product Created Successfully", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+
+          setTimeout(() => {
+            history.push("/admin/products");
+          }, 2500);
+        }
       })
       .catch((error) => {
         toast.error("Something Went Wrong Please Try again", {
@@ -100,10 +116,13 @@ const CreateProduct = () => {
           Create Product
         </h1>
         <div className="flex w-full items-center justify-center">
-          <form onSubmit={(e)=>{
-            e.preventDefault()
-            create()
-          }} className="w-full lg:w-96">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              create();
+            }}
+            className="w-full lg:w-96"
+          >
             <p className=" mt-3">Name</p>
             <input
               required
@@ -142,74 +161,78 @@ const CreateProduct = () => {
               className=" lg:w-96 w-full rounded-md border outline-none bg-none px-2 py-2 text-sm"
             />
 
-            <div id="createProductFormImage"  className="mt-4 flex items-center gap-2">
+            <div
+              id="createProductFormImage"
+              className="mt-4 flex items-center gap-2"
+            >
               {imagesPreview.map((image, index) => (
-                <img key={index} src={image} className="w-20" alt="Product Preview" />
+                <img
+                  key={index}
+                  src={image}
+                  className="w-20"
+                  alt="Product Preview"
+                />
               ))}
             </div>
 
             <p className=" mt-3 mb-1">Images</p>
-            <input  required multiple   onChange={createProductImagesChange} type="file" />
+            <input
+              required
+              multiple
+              onChange={createProductImagesChange}
+              type="file"
+            />
 
             <p className=" mt-3 mb-1">Product Type</p>
             <select
               required
-              value={productType}
-              onChange={(e) => setProductType(e.target.value)}
+              value={productType.productType}
+              onChange={(e) => {
+                // setProductType(e.target.value)
+                let obj = productType;
+                obj.productType = e.target.value;
+                setProductType({ ...obj });
+              }}
               className="border px-3 py-1 text-sm outline-none"
               name=""
               id=""
             >
               <option value=""></option>
-              <option value="perfume">Perfume</option>
-              <option value="bakhoor">Bakhoor</option>
+              {arrayCategory?.map((item) => (
+                <option value={item?.title}>{item?.title}</option>
+              ))}
             </select>
-           { productType === 'perfume' && <p className=" mt-3 mb-1">Category</p>}
-          { productType === 'perfume' && <select
-              required
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="border px-3 py-1 text-sm outline-none"
-              name=""
-              id=""
-            >
-              <option value=""></option>
-              <option value="men">Men</option>
-              <option value="women">Women</option>
-            </select>}
-            <p className=" mt-3 mb-1">Smell</p>
-            { productType === "perfume" &&  <select
-              required
-              value={smell}
-              onChange={(e) => setSmell(e.target.value)}
-              className="border px-3 py-1 text-sm outline-none"
-              name=""
-              id=""
-            >
-              <option value=""></option>
-              <option value="citrus">Citrus</option>
-              <option value="oud">Owd</option>
-              <option value="sweet">Sweet</option>
-              <option value="rose">Rose</option>
-            </select>
-            }
-            {
-             productType === 'bakhoor' && <select
-              required
-              value={smell}
-              onChange={(e) => setSmell(e.target.value)}
-              className="border px-3 py-1 text-sm outline-none"
-              name=""
-              id=""
-            >
-              <option value=""></option>
-              <option value="strong">Strong</option>
-              <option value="medium">Medium</option>
-              <option value="weak">Weak</option>
-             
-            </select>
-            }
 
+            {productType.productType !== "" && (
+              <>
+                {arrayCategory
+                  .filter((i) => i?.title === productType.productType)?.[0]
+                  ?.subcategory?.map((item, ind) => (
+                    <>
+                      <p className=" mt-3 mb-1">{item?.subTitle}</p>
+                      <select
+                        required
+                        value={productType.tags[ind]}
+                        onChange={(e) => {
+                          let obj = productType;
+                          obj.tags[ind] = e.target.value;
+                          setProductType({ ...obj });
+                        }}
+                        className="border px-3 py-1 text-sm outline-none"
+                        name=""
+                        id=""
+                      >
+                        <option value=""></option>
+                        {item?.options?.map((op) => (
+                          <option value={op}>{op}</option>
+                        ))}
+                      </select>
+                    </>
+                  ))}
+              </>
+            )}
+          
+         
             <div className="w-full flex items-center justify-center mt-3">
               <button className="inline-block text-center transition delay-100 ease-linear bg-primary-txt border border-transparent rounded-md py-2 px-8 font-medium text-white hover:bg-blk-txt">
                 Submit

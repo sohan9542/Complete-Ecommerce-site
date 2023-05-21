@@ -8,7 +8,7 @@ const Addproduct = ({ product }) => {
     
     return (
         <>
-            <li key={product._id} className="py-6 flex">
+            <li key={product.id} className="py-6 flex">
                 <div className="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md ">
                     <img
                         src={product?.image}
@@ -21,9 +21,9 @@ const Addproduct = ({ product }) => {
                     <div>
                         <div className="flex justify-between text-base font-medium text-gray-900">
                             <h3>
-                                <Link href={product.href}>{product.name}</Link>
+                                <Link to={'/product/'+ product?.id}>{product.name}</Link>
                             </h3>
-                            <p className="ml-4">${product.price}</p>
+                            <p className="ml-4">£{product.price}</p>
                         </div>
                         <p className="mt-1 text-sm text-gray-500">{product.color}</p>
                     </div>

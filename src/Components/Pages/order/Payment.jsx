@@ -19,6 +19,7 @@ import { useState } from "react";
 
 const Payment = () => {
   const stripePromise = loadStripe("pk_test_6pRNASCoBOKtIshFeQd4XMUh");
+  console.log('stripePromise', stripePromise)
   return (
     <>
       <Elements stripe={stripePromise}>
@@ -31,13 +32,13 @@ const Payment = () => {
 const PaymentCompoent = () => {
 
   const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo"));
-
+ 
   const stripe = useStripe();
   const elements = useElements();
   const payBtn = useRef(null);
 
   const paymentData = {
-    amount: Math.round(orderInfo.totalPrice),
+    amount: Math.round(orderInfo.totalPrice * 100),
   };
 
   let shippingInfo = JSON.parse(localStorage.getItem("shippingInfo"));
@@ -51,6 +52,7 @@ const PaymentCompoent = () => {
     taxPrice: orderInfo.tax,
     shippingPrice: orderInfo.shippingCharges,
     totalPrice: orderInfo.totalPrice,
+    discount: orderInfo.discount
   };
 
   // createing the order
@@ -67,6 +69,7 @@ const PaymentCompoent = () => {
         order,
         config
       );
+      sessionStorage.removeItem("disXcount");
       console.log("orderData", data);
     } catch (error) {
       toast.error(error.response.data.message, {
@@ -209,7 +212,7 @@ const PaymentCompoent = () => {
 
       <input
         type="submit"
-        value={`Pay - $${orderInfo && orderInfo.totalPrice}`}
+        value={`Pay - £${orderInfo && orderInfo.totalPrice}`}
         ref={payBtn}
         className="flex w-full cursor-pointer mt-3 justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-txt hover:bg-new"
       />

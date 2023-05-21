@@ -47,7 +47,7 @@ const Dashboard = () => {
           </div>
           <div className=" bg-yellow-100 h-40 w-full flex items-center flex-col justify-center">
             <p>Total Amount</p>
-            <h1 className="text-4xl">${allProducts?.totalAmount}</h1>
+            <h1 className="text-4xl">£{allProducts?.totalAmount}</h1>
           </div>
         </div>
       </div>

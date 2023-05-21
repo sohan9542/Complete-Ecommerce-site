@@ -12,35 +12,8 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Rating from "@mui/material/Rating";
 
-const product = {
-  name: "Basic Tee 6-Pack",
-  price: "$192",
-  href: "#",
-  rating: 3.9,
-  breadcrumbs: [
-    { id: 1, name: "Men", href: "#" },
-    { id: 2, name: "Clothing", href: "#" },
-  ],
-  images: [
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-secondary-product-shot.jpg",
-      alt: "Two each of gray, white, and black shirts laying flat.",
-    },
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg",
-      alt: "Model wearing plain black basic tee.",
-    },
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg",
-      alt: "Model wearing plain gray basic tee.",
-    },
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-featured-product-shot.jpg",
-      alt: "Model wearing plain white basic tee.",
-    },
-  ],
-};
 const reviews = { href: "#", average: 4, totalCount: 117 };
 
 function classNames(...classes) {
@@ -54,12 +27,8 @@ const ProductDetails = () => {
     setValue(newValue);
   };
 
-  const {
-    setToltip,
-    isAuthenticated,
-    added_products,
-    setAdded_products,
-  } = useContext(RapperContent);
+  const { setToltip, isAuthenticated, added_products, setAdded_products } =
+    useContext(RapperContent);
   const { id } = useParams();
   const [thisproduct, setThisproduct] = useState(null);
   const [reload, setReload] = useState(false);
@@ -215,18 +184,22 @@ const ProductDetails = () => {
                 <h3 className="sr-only">Reviews</h3>
                 <div className="flex items-center">
                   <div className="flex items-center">
-                    {[0, 1, 2, 3, 4].map((rating) => (
-                      <StarIcon
-                        key={thisproduct?.ratings}
-                        className={classNames(
-                          thisproduct?.ratings > rating
-                            ? "text-yellow-500"
-                            : "text-ash",
-                          "h-5 w-5 flex-shrink-0"
-                        )}
-                        aria-hidden="true"
+                    {thisproduct?.ratings && thisproduct?.ratings !== 0 && (
+                      <Rating
+                        name="half-rating-read"
+                        defaultValue={thisproduct?.ratings}
+                        precision={0.5}
+                        readOnly
                       />
-                    ))}
+                    )}
+                    {thisproduct?.ratings && thisproduct?.ratings === 0 && (
+                      <Rating
+                        name="half-rating-read"
+                        defaultValue={0}
+                        precision={0.5}
+                        readOnly
+                      />
+                    )}
                   </div>
                   <a
                     href={reviews.href}
@@ -239,7 +212,7 @@ const ProductDetails = () => {
               {/* Options */}
               <div className="mt-3 lg:mt-0 lg:row-span-3">
                 <p className="text-2xl text-primary-txt">
-                  ${thisproduct?.price}
+                  £{thisproduct?.price}
                 </p>
                 <div>
                   <div className="space-y-6 mt-2">
@@ -252,7 +225,7 @@ const ProductDetails = () => {
                 <div className=" mt-2 flex  gap-3 items-center">
                   <p> Quentity: </p>
                   <div className="flex items-center justify-between w-36 border border-ash">
-                    {quentity > 1  ? (
+                    {quentity > 1 ? (
                       <div
                         onClick={() => setQuentity(quentity - 1)}
                         className="flex justify-center bg-primary-txt text-xl h-full py-2 items-center cursor-pointer w-10"
@@ -268,7 +241,8 @@ const ProductDetails = () => {
                       {quentity}
                     </div>
 
-                    {quentity < thisproduct?.stock & checkQuantity(thisproduct?.stock) ? (
+                    {(quentity < thisproduct?.stock) &
+                    checkQuantity(thisproduct?.stock) ? (
                       <div
                         onClick={() => setQuentity(quentity + 1)}
                         className="flex justify-center bg-primary-txt text-xl h-full py-2 items-center cursor-pointer w-10"
@@ -329,11 +303,10 @@ const ProductDetails = () => {
                     </button>
                   )}
                 </div>
-                <div className="text-ash border-t border-border-clr mt-2 pt-2">
-                  {thisproduct?.productType == "perfume" && (
-                    <p className="text-sm">Category: {thisproduct?.category}</p>
-                  )}
-                  <p className="text-sm">Smell : {thisproduct?.smell}</p>
+                <div className="flex items-center gap-2 border-t border-border-clr mt-2 pt-2">
+                  {thisproduct?.tags?.map((item) => (
+                    <p className="text-sm text-new">#{item}</p>
+                  ))}
                 </div>
               </div>
             </div>

@@ -61,83 +61,109 @@ const Sidebar = () => {
 
               {/* Links */}
               <Tab.Group as="div" className="mt-2">
-          <div className="flex flex-col pl-7">
-          <Link
-            className="hover:text-new text-lg pb-2 font-medium"
-            to="/admin/dashboard"
-          >
-            Dashboard
-          </Link>
-          <Link
-            className="hover:text-new text-lg pb-2 font-medium"
-            to="/admin/products"
-          >
-            All Products
-          </Link>
-          <Link
-            className="hover:text-new pt-2 text-lg pb-2 font-medium"
-            to="/admin/create"
-          >
-            Create Product
-          </Link>
-          <Link
-            className="hover:text-new pt-2 text-lg pb-2  font-medium"
-            to="/admin/orders"
-          >
-            Orders
-          </Link>
-          <Link
-            className="hover:text-new pt-2 text-lg pb-2  font-medium"
-            to="/admin/users"
-          >
-            Users
-          </Link>
-          </div>
-              </Tab.Group>
+                <div className="flex flex-col pl-7">
+                  <Link
+                    className="hover:text-new text-lg pb-2 font-medium"
+                    to="/admin/dashboard"
+                  >
+                    Dashboard
+                  </Link>
 
-        
+                  <Link
+                    className="hover:text-new text-lg pb-2 font-medium"
+                    to="/admin/category"
+                  >
+                    Category
+                  </Link>
+
+                  <Link
+                    className="hover:text-new text-lg pb-2 font-medium"
+                    to="/admin/products"
+                  >
+                    All Products
+                  </Link>
+                  <Link
+                    className="hover:text-new pt-2 text-lg pb-2 font-medium"
+                    to="/admin/create"
+                  >
+                    Create Product
+                  </Link>
+                  <Link
+                    className="hover:text-new pt-2 text-lg pb-2  font-medium"
+                    to="/admin/orders"
+                  >
+                    Orders
+                  </Link>
+                  <Link
+                    className="hover:text-new pt-2 text-lg pb-2  font-medium"
+                    to="/admin/users"
+                  >
+                    Users
+                  </Link>
+                  <Link
+                    className="hover:text-new text-lg pb-2 font-medium"
+                    to="/admin/cupon"
+                  >
+                    Coupon
+                  </Link>
+                </div>
+              </Tab.Group>
             </div>
           </Transition.Child>
         </Dialog>
       </Transition.Root>
 
       <div className=" flex-col hidden lg:flex h-full px-10 py-6 pt-20 divide-y bg-card-bg">
-          <NavLink
-            activeClassName="text-new"
-            className="hover:text-new text-lg pb-2 font-medium"
-            to="/admin/dashboard"
-          >
-            Dashboard
-          </NavLink>
-          <NavLink
-            activeClassName="text-new"
-            className="hover:text-new text-lg pb-2 font-medium"
-            to="/admin/products"
-          >
-            All Products
-          </NavLink>
-          <NavLink
-            activeClassName="text-new"
-            className="hover:text-new pt-2 text-lg pb-2 font-medium"
-            to="/admin/create"
-          >
-            Create Product
-          </NavLink>
-          <NavLink
-            activeClassName="text-new"
-            className="hover:text-new pt-2 text-lg pb-2  font-medium"
-            to="/admin/orders"
-          >
-            Orders
-          </NavLink>
-          <NavLink
+        <NavLink
           activeClassName="text-new"
-            className="hover:text-new pt-2 text-lg pb-2  font-medium"
-            to="/admin/users"
-          >
-            Users
-          </NavLink>
-        </div>
+          className="hover:text-new text-lg pb-2 font-medium"
+          to="/admin/dashboard"
+        >
+          Dashboard
+        </NavLink>
+        <NavLink
+          activeClassName="text-new"
+          className="hover:text-new pt-2 text-lg pb-2  font-medium"
+          to="/admin/category"
+        >
+          Category
+        </NavLink>
+        <NavLink
+          activeClassName="text-new"
+          className="hover:text-new text-lg pb-2 font-medium"
+          to="/admin/products"
+        >
+          All Products
+        </NavLink>
+        <NavLink
+          activeClassName="text-new"
+          className="hover:text-new pt-2 text-lg pb-2 font-medium"
+          to="/admin/create"
+        >
+          Create Product
+        </NavLink>
+        <NavLink
+          activeClassName="text-new"
+          className="hover:text-new pt-2 text-lg pb-2  font-medium"
+          to="/admin/orders"
+        >
+          Orders
+        </NavLink>
+        <NavLink
+          activeClassName="text-new"
+          className="hover:text-new pt-2 text-lg pb-2  font-medium"
+          to="/admin/users"
+        >
+          Users
+        </NavLink>
+        <NavLink
+          activeClassName="text-new"
+          className="hover:text-new pt-2 text-lg pb-2  font-medium"
+          to="/admin/cupon"
+        >
+          Coupon
+        </NavLink>
+      </div>
     </div>
   );
 };

@@ -7,21 +7,7 @@ import { RapperContent } from '../../../../App'
 import { Link } from 'react-router-dom'
 import { AiFillFacebook, AiFillTwitterSquare, AiFillInstagram, AiFillLinkedin } from 'react-icons/ai'
 
-const product = {
-    name: 'Basic Tee 6-Pack ',
-    price: '$192',
-    rating: 3.9,
-    reviewCount: 117,
-    href: '#',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-quick-preview-02-detail.jpg',
-    imageAlt: 'Two each of gray, white, and black shirts arranged on table.',
-    colors: [
-        { name: 'White', class: 'bg-white', selectedClass: 'ring-gray-400' },
-        { name: 'Gray', class: 'bg-gray-200', selectedClass: 'ring-gray-400' },
-        { name: 'Black', class: 'bg-gray-900', selectedClass: 'ring-gray-900' },
-    ],
 
-}
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -122,7 +108,7 @@ export default function Quickview() {
                                                     </Link>
                                                 </div>
                                             </div> */}
-                                            <p className="text-2xl text-primary-txt">${quickviewProduct.price}</p>
+                                            <p className="text-2xl text-primary-txt">£{quickviewProduct.price}</p>
                                         </section>
 
                                         <section aria-labelledby="options-heading" className="mt-10 d">

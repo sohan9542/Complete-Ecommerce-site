@@ -46,7 +46,7 @@ const Profile = () => {
     };
     axios(config)
       .then(function (response) {
-        setAllProducts(response.data?.orders);
+        setAllProducts(response.data?.orders?.reverse());
       })
       .catch(function (error) {
         console.log(error);
@@ -153,7 +153,7 @@ const Profile = () => {
                               <p>{item?.paidAt?.slice(0, 10)}</p>
                             </td>
                             <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
-                              <p>${item?.totalPrice}</p>
+                              <p>£{item?.totalPrice}</p>
                             </td>
                             <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
                               <p>{item?.paymentInfo?.id}</p>
@@ -236,15 +236,13 @@ const ViewOrder = ({ order, setShowDetails }) => {
             ).name
           }
         </p>
+   
         <p className="text-lg">
-          <span className="font-bold">Tax: </span> ${order?.taxPrice}
-        </p>
-        <p className="text-lg">
-          <span className="font-bold">Shipping Price: </span> $
+          <span className="font-bold">Shipping Price: </span> £
           {order?.shippingPrice}
         </p>
         <p className="text-lg">
-          <span className="font-bold">Total Price: </span> ${order?.totalPrice}
+          <span className="font-bold">Total Price: </span> £{order?.totalPrice}
         </p>
 
         <div>
@@ -289,7 +287,7 @@ const ViewOrder = ({ order, setShowDetails }) => {
                         <img className="w-12" src={item?.image} alt="" />
                       </td>
                       <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
-                        <p>${item?.price}</p>
+                        <p>£{item?.price}</p>
                       </td>
 
                       <td className="px-4 py-2 text-gray-600 font-medium whitespace-nowrap">
