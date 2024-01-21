@@ -35,11 +35,12 @@ const Product = ({ product }) => {
   return (
     <div>
       <div key={product._id} className="group relative">
-        <div className="w-full image relative min-h-80 border aspect-w-1 aspect-h-1 rounded-md overflow-hidden lg:h-80 lg:aspect-none">
+        <div className="w-full image relative h-80 border  rounded-md overflow-hidden">
           <img
             src={product?.images?.[0]?.url}
             alt={product?.images?.[0]?.url}
-            className="w-full h-full object-center object-cover"
+           
+            className="w-full h-full object-cover"
           />
           <div className="add_to_cart absolute">
             <div className="add-wish">

@@ -112,7 +112,7 @@ const CreateProduct = () => {
     <div className=" grid grid-cols-1 lg:grid-cols-5">
       <Sidebar />
       <div className="w-full lg:col-span-4 mt-32 lg:mt-0">
-        <h1 className="text-center mt-32 text-2xl text-blk-tx font-bold">
+        <h1 className="text-center mt-10 text-2xl text-blk-tx font-bold">
           Create Product
         </h1>
         <div className="flex w-full items-center justify-center">
